@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -11,13 +12,18 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+# from app import login_manager
+
+
+
 # user Models
-class User(db.Model):
+class User(UserMixin, db.Model):
     """ Model for user """
 
     __tablename__ = 'users'
 
-    username = db.Column(db.Text, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Text, unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
     user_type_id = db.Column(db.Integer,db.ForeignKey('user_types.id'))
 
@@ -52,6 +58,9 @@ class User(db.Model):
                 return user
 
         return False
+
+
+
 
 class User_Type(db.Model):
     """ Model for types of users """

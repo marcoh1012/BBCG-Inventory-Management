@@ -1,7 +1,7 @@
 from app import app, db
 from models import User, connect_db, User_Type
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
 
 connect_db(app)
 
