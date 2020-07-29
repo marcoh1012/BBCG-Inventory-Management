@@ -15,3 +15,16 @@ app.config['SECRET_KEY'] = "oh-so-secret"
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
+
+db.drop_all()
+db.create_all()
+
+@app.route('/')
+def homepage():
+    """ render homepage """
+    return redirect('/login')
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    """ render login page or log in """
+    return render_template('login.html')
