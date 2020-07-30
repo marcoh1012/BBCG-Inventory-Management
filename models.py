@@ -118,7 +118,7 @@ class Slab(db.Model):
     width = db.Column(db.Integer, nullable=True)
     picture = db.Column(db.Text, nullable=True)
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
-    label = db.Column(db.Text, unique=True, nullable=True)
+    label = db.Column(db.Integer, unique=True, nullable=True)
     # need to change to nullable false
     created = db.Column(db.DateTime, nullable=True)
     completed = db.Column(db.DateTime)
@@ -126,9 +126,11 @@ class Slab(db.Model):
     vendor = db.relationship('Vendor')
     color = db.relationship('Color')
 
+    jobs = db.relationship('Job', secondary='slabs_jobs', backref=db.backref('slabs'))
+
     def create_label_id(self):
         """ Create label id number """
-        return f"{self.vendor_id}{self.color_id}{self.batch_num}{self.slab_num}"
+        return int(f"{self.vendor_id}{self.color_id}{self.batch_num}{self.slab_num}")
 
     def calculate_area(self):
         """ Calculate square footage of a slab  input is in  inches"""
@@ -136,3 +138,71 @@ class Slab(db.Model):
         return sf
 
 
+######## Models for Jobs ########
+
+class Contractor(db.Model):
+    """ Model for contractors """
+    __tablename__ = "contractors"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, unique=True, nullable=False)
+
+    jobs = db.relationship('Job')
+
+class Cutout(db.Model):
+    """ Model for cutouts """
+    __tablename__ = "cutouts"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, unique=True, nullable=False)
+
+class Edge(db.Model):
+    """ Model for edges """
+    __tablename__ = "edges"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, unique=True, nullable=False)
+    type = db.Column(db.Text, nullable=False)
+
+class Job(db.Model):
+    """Model for Job """
+    __tablename__ = 'jobs'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, nullable=False)
+    square_feet = db.Column(db.Float, nullable=True)
+    installation_date = db.Column(db.DateTime, nullable=True)
+    fabrication_date = db.Column(db.DateTime, nullable=True)
+    po_number = db.Column(db.Integer, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
+    contractor_id = db.Column(db.Integer, db.ForeignKey('contractors.id'))
+
+    contractor = db.relationship("Contractor")
+    edges = db.relationship('Edge', secondary='jobs_edges', backref=db.backref('jobs'))
+    cutouts = db.relationship('Cutout', secondary='jobs_cutouts', backref=db.backref('jobs'))
+
+class JobEdge(db.Model):
+    """ model for job_edge """
+    __tablename__ = 'jobs_edges'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
+    edge_id = db.Column(db.Integer, db.ForeignKey('edges.id'))
+    lf = db.Column(db.Float)
+
+class JobCutout(db.Model):
+    """ Model for job_cutout """
+
+    __tablename__ = 'jobs_cutouts'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'))
+    cutout_id = db.Column(db.Integer, db.ForeignKey('cutouts.id'))
+    cutout_count = db.Column(db.Integer)
+
+class SlabJob(db.Model):
+    """ Model for Slab_Job """
+    __tablename__ = 'slabs_jobs'
+
+    slab_id = db.Column(db.Integer, db.ForeignKey('slabs.label'), primary_key=True)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), primary_key=True)

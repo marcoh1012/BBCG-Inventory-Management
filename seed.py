@@ -51,3 +51,31 @@ db.session.commit()
 slab1 = Slab.query.first()
 slab1.label=slab1.create_label_id()
 db.session.commit()
+
+c1=Contractor(name = 'BBCG')
+
+kit_cutout = Cutout(name='Kitchen SinK')
+bath_cutout = Cutout(name = 'Bath Cutout')
+
+square = Edge(name='Square', type = 'Standard')
+bevel = Edge(name='Bevel', type = 'Standard')
+
+job = Job(
+    name='test',
+    square_feet='80.0',
+    notes='This is just a test',
+    contractor_id = '1',
+)
+
+models = [c1, kit_cutout, bath_cutout, square, bevel,job]
+db.session.add_all(models)
+db.session.commit()
+
+jc=JobCutout(job_id=1,cutout_id=1,cutout_count=1)
+jc2=JobCutout(job_id=1,cutout_id=2,cutout_count=4)
+je=JobEdge(job_id=1,edge_id=2, lf='54.2')
+sl=SlabJob(slab_id=1111,job_id=1)
+
+models = [jc, jc2, je, sl]
+db.session.add_all(models)
+db.session.commit()
