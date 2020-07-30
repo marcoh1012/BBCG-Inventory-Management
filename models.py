@@ -121,10 +121,12 @@ class Slab(db.Model):
     label = db.Column(db.Integer, unique=True, nullable=True)
     # need to change to nullable false
     created = db.Column(db.DateTime, nullable=True)
-    completed = db.Column(db.DateTime)
+    amount_left = db.Column(db.Integer, default = 100)
+    completed = db.Column(db.Boolean, default=False)
 
     vendor = db.relationship('Vendor')
     color = db.relationship('Color')
+    type = db.relationship('Slab_Type')
 
     jobs = db.relationship('Job', secondary='slabs_jobs', backref=db.backref('slabs'))
 
@@ -136,6 +138,10 @@ class Slab(db.Model):
         """ Calculate square footage of a slab  input is in  inches"""
         sf = (int(self.length) * int(self.width)) / 144
         return sf
+    def cut_slab(self,percent):
+        """ calculate the amount of slab left """
+        self.amount_left= self.amount_left-percent
+        return self.amount_left
 
 
 ######## Models for Jobs ########
@@ -206,3 +212,4 @@ class SlabJob(db.Model):
 
     slab_id = db.Column(db.Integer, db.ForeignKey('slabs.label'), primary_key=True)
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), primary_key=True)
+    percent_used = db.Column(db.Integer)

@@ -1,0 +1,7 @@
+{% extends 'base.html' %} {% block content%}
+<h3> {{slab.vendor.name}} {{slab.color.name}} {{slab.type.name}}</h3>
+<h5>Batch Number: {{slab.batch_num}} Slab #: {{slab.slab_num}}</h5>
+<h6>ID: {{slab.label}}</h6>
+<p>Length: {{slab.length}} Width: {{slab.width}}</p>
+<p>Square Feet: {{slab.calculate_area()}}sf</p>
+<P>More data to come</P>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block content%}
+<h2>Cutting Slab</h2>
+Amount Left = {{slab.amount_left}} %
+<form method="POST" id="cut_slab_form">
+    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+    <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+
+    <button class="btn">Enter</button>
+</form>
+<a href=/add_job>Add a Job</a>
+<a href="/scan">Scan Slab</a> {% endblock %}

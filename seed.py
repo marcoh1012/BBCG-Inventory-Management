@@ -1,8 +1,8 @@
 from app import app, db
 from models import *
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 
 connect_db(app)
 
@@ -74,8 +74,8 @@ db.session.commit()
 jc=JobCutout(job_id=1,cutout_id=1,cutout_count=1)
 jc2=JobCutout(job_id=1,cutout_id=2,cutout_count=4)
 je=JobEdge(job_id=1,edge_id=2, lf='54.2')
-sl=SlabJob(slab_id=1111,job_id=1)
+# sl=SlabJob(slab_id=1111,job_id=1)
 
-models = [jc, jc2, je, sl]
+models = [jc, jc2, je]
 db.session.add_all(models)
 db.session.commit()

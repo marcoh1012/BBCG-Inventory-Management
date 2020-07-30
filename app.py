@@ -1,15 +1,15 @@
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
-from models import db, connect_db, User,User_Type
+from models import *
 from forms import *
 
 # CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -60,7 +60,7 @@ def login():
 
         if not user:
             flash("Invalid Credentials Try Again")
-            return redirect('/login', form=form)
+            return redirect('/login')
         login_user(user)
         flash('Logged In')
         return redirect('/home')
@@ -80,3 +80,87 @@ def home():
     user_type=current_user.user_type.type.lower()
     return render_template(f'{user_type}.html')
     
+##### Slab Routes #####
+
+@app.route('/scan', methods=['GET', 'POST'])
+def scan():
+    if current_user.is_authenticated:    
+        form = ScanBarcodeForm()
+
+        if form.validate_on_submit():
+            slab = Slab.query.filter(Slab.label==form.label.data).first()
+
+            if slab is None:
+                flash("No Slab Found")
+                return redirect('/scan')
+            flash('Slab Found')
+            return redirect(f'/cut_slab/{slab.label}')
+        return render_template('slabs/scan.html', form=form)
+    return redirect('/home')
+
+@app.route('/cut_slab/<int:id>', methods = ['GET', 'POST'])
+def cut_slab(id):
+    """ form for slab that is cut """
+    if current_user.is_authenticated:
+        slab = Slab.query.filter(Slab.label==id).first()    
+        form = CutSlabForm()
+        jobs = [(str(i.id),i.name) for i in Job.query.all()]
+        form.job.choices=jobs
+
+        if form.validate_on_submit():
+            job = Job.query.get_or_404(form.job.data)
+            if slab is None:
+                flash("No Slab Found")
+                return redirect('/scan')
+            slab.cut_slab(form.cut_amount.data)
+            slab.jobs.append(job)
+            slab_job = SlabJob.query.get((slab.label,job.id))
+            slab_job.percent_used=form.cut_amount.data
+            db.session.commit()
+            flash('Success')
+            return redirect(f'/scan')
+        return render_template('slabs/cut_slab.html', form=form, slab=slab)
+    return redirect('/home')
+
+@app.route('/slab/<int:id>')
+def slab(id):
+    """ slab info """
+    if current_user.is_authenticated:  
+        slab = Slab.query.filter(Slab.label==id).first()
+
+        if slab is None:
+            flash("No Slab Found")
+            return redirect('/scan')
+        flash('Slab Found')
+        return render_template('slabs/slab.html', slab=slab)
+
+    return redirect('/home')
+
+@app.route('/slab/<int:id>/edit', methods=['GET', 'POST'])
+def editslab(id):
+    """ slab info """
+    if current_user.is_authenticated:  
+        slab = Slab.query.filter(Slab.label==id).first()
+        vendors=[(str(i.id),i.name) for i in Vendor.query.all()]
+        colors=[(str(i.id),i.name)for i in Color.query.all()]
+        types = [(str(i.id),i.name) for i in Slab_Type.query.all()]
+        form=SlabForm(obj=slab)
+        form.vendor.choices=vendors
+        form.color.choices=colors
+        form.type_id.choices=types
+        if slab is None:
+            flash("No Slab Found")
+            return redirect('/scan')
+        if form.validate_on_submit():
+            slab.vendor_id = form.vendor.data
+            slab.color_id = form.color.data
+            slab.batch_num = form.batch_num.data
+            slab.length = form.length.data
+            slab.width = form.width.data 
+            slab.type_id = form.type_id.data
+            slab.completed = form.completed.data
+            return redirect(f'/slab/{id}')
+        flash('Slab Found')
+        return render_template('slabs/edit_slab.html', form=form, slab=slab)
+
+    return redirect('/home')
