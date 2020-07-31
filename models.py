@@ -116,7 +116,7 @@ class Slab(db.Model):
 
     length = db.Column(db.Integer, nullable=True)
     width = db.Column(db.Integer, nullable=True)
-    picture = db.Column(db.Text, nullable=True)
+    picture = db.Column(db.Text, nullable=True, default = 'pictures/slabs/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
     label = db.Column(db.Integer, unique=True, nullable=True)
     # need to change to nullable false

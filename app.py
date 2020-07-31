@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
@@ -13,9 +14,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
+app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd() + '/pictures/slabs/'
 app.config['SECRET_KEY'] = "oh-so-secret"
 debug = DebugToolbarExtension(app)
-
 
 connect_db(app)
 
