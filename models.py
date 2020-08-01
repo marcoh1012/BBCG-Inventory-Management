@@ -99,7 +99,7 @@ class Slab_Type(db.Model):
 
     __tablename__ = 'slab_types'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement= True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
 
     slabs = db.relationship('Slab')
@@ -116,11 +116,11 @@ class Slab(db.Model):
 
     length = db.Column(db.Integer, nullable=True)
     width = db.Column(db.Integer, nullable=True)
-    picture = db.Column(db.Text, nullable=True, default = 'pictures/slabs/no_image.jpg')
+    picture = db.Column(db.Text, nullable=True, default = '/static/pics/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
     label = db.Column(db.Integer, unique=True, nullable=True)
     # need to change to nullable false
-    created = db.Column(db.DateTime, nullable=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     amount_left = db.Column(db.Integer, default = 100)
     completed = db.Column(db.Boolean, default=False)
 

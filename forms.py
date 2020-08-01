@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, IntegerField, FloatField, BooleanField, FileField, TextAreaField
+from flask_wtf.file import FileField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, FloatField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange
 
 class LoginForm(FlaskForm):
@@ -27,14 +28,13 @@ class CutSlabForm(FlaskForm):
     notes = TextAreaField('Notes')
 
 
-
 class SlabForm(FlaskForm):
     """ Form to add/edit slabs """
     picture = FileField('Picture')
     vendor = SelectField('Vendor')
     color = SelectField('Slab Color')
     batch_num = IntegerField("Batch Number", validators=[DataRequired()])
+    slab_num = IntegerField("Slab Number", validators=[DataRequired()])
     length = FloatField('Length')
     width = FloatField('Width')
     type_id = SelectField('Slab Type', validators=[DataRequired()])
-    completed = BooleanField('Entire Slab Used')

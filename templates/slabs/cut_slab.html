@@ -1,8 +1,8 @@
 {% extends 'base.html' %} {% block content%}
 <h2>Cutting Slab</h2>
-<div><img src="{{slab.picture}}" alt="slab picture"></div>
+<div><img src="{{slab.picture}}" alt="slab picture" style="width: 300px;"></div>
 Amount Left = {{slab.amount_left}} %
-<form method="POST" id="cut_slab_form">
+<form method="POST" id="cut_slab_form" enctype="multipart/form-data">
     {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
     <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
 

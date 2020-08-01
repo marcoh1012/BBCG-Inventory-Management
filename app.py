@@ -1,7 +1,9 @@
 import os
+import requests
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
+from werkzeug.utils import secure_filename
 from models import *
 from forms import *
 
@@ -9,8 +11,8 @@ from forms import *
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -113,6 +115,13 @@ def cut_slab(id):
             if slab is None:
                 flash("No Slab Found")
                 return redirect('/scan')
+            if form.picture.data:
+                f = form.picture.data
+                filename = secure_filename(f.filename)
+                f.save(os.path.join(
+                    'static/pics', filename
+                ))
+                slab.picture = f'/static/pics/{filename}'
             slab.cut_slab(form.cut_amount.data)
             slab.jobs.append(job)
             slab_job = SlabJob.query.get((slab.label,job.id))
@@ -165,3 +174,51 @@ def editslab(id):
         return render_template('slabs/edit_slab.html', form=form, slab=slab)
 
     return redirect('/home')
+
+@app.route('/recieve', methods=['GET','POST'])
+def recieve():
+    """ reviece new slabb and add to db """
+
+    if current_user.is_authenticated:
+        form = SlabForm()
+        vendors=[(str(i.id),i.name) for i in Vendor.query.all()]
+        colors=[(str(i.id),i.name)for i in Color.query.all()]
+        types = [(str(i.id),i.name) for i in Slab_Type.query.all()]
+        form.vendor.choices=vendors
+        form.color.choices=colors
+        form.type_id.choices=types
+        if form.validate_on_submit():
+            slab=Slab(
+                vendor_id=form.vendor.data,
+                color_id=form.color.data,
+                batch_num=form.batch_num.data,
+                slab_num=form.slab_num.data,
+                length=form.length.data,
+                width=form.width.data,
+                type_id=form.type_id.data
+            )
+            if form.picture.data:
+                f = form.picture.data
+                filename = secure_filename(f.filename)
+                f.save(os.path.join(
+                    'static/pics', filename
+                ))
+                slab.picture = f'/static/pics/{filename}'
+            db.session.add(slab)
+            db.session.commit()
+            print(f'**********************{form.picture.data}')
+            slab.label = slab.create_label_id()
+            db.session.commit()
+            return redirect(f'/slab/{slab.label}')
+                
+        return render_template('/slabs/recieve.html', form = form)
+
+    return redirect('/')
+
+
+@app.route('/slab/<int:id>/barcode')
+def barcode(id):
+    """ Create barcode and return it """
+    resp=requests.get(f'')
+    slab = Slab.query.filter(Slab.label==id).first()
+    return render_template('/slabs/slab.html',slab=slab, barcode=resp.data)
