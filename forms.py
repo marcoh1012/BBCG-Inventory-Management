@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms import StringField, PasswordField, SelectField, IntegerField, FloatField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SelectField, IntegerField, FloatField, BooleanField, TextAreaField, DateField
 from wtforms.validators import DataRequired, Length, NumberRange
 
 class LoginForm(FlaskForm):
@@ -22,6 +22,7 @@ class ScanBarcodeForm(FlaskForm):
     label = IntegerField('Barcode #', validators=[DataRequired()])
 
 class CutSlabForm(FlaskForm):
+    """ Form for cutting a slab """
     picture = FileField('Picture')
     job = SelectField('Job Name')
     cut_amount = FloatField('Amount used in %', validators=[DataRequired(), NumberRange(min=0,max=100,message=" Amount must be between 0 and 1")])
@@ -38,3 +39,15 @@ class SlabForm(FlaskForm):
     length = FloatField('Length')
     width = FloatField('Width')
     type_id = SelectField('Slab Type', validators=[DataRequired()])
+
+class JobForm(FlaskForm):
+    """ Form to Add/Edit Jobs """
+    name=StringField('Name', validators=[DataRequired()])
+    po_number=StringField('PO Number')
+    contractor_id=SelectField('Contractor/Customer', validators=[DataRequired()])
+    sf=FloatField('Squared Feet')
+    edge_id=SelectField('Edge Detail')
+    lf=IntegerField('linear feet')
+    installation_date=DateField(' Installation Date',format='%Y-%m-%d')
+    fabrication_date=DateField('Fabrication Date',format='%Y-%m-%d')
+    notes=TextAreaField('Notes')

@@ -11,8 +11,8 @@ from forms import *
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -48,7 +48,7 @@ def signup():
             User.signup(form.username.data,form.password.data,form.type.data)
             db.session.commit()
             return redirect('/')
-        return render_template('newuser.html', form = form)
+        return render_template('users/newuser.html', form = form)
     return redirect('/')
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -81,7 +81,7 @@ def logout():
 @app.route('/home')
 def home():
     user_type=current_user.user_type.type.lower()
-    return render_template(f'{user_type}.html')
+    return render_template(f'users/{user_type}.html')
     
 ##### Slab Routes #####
 
@@ -222,3 +222,38 @@ def barcode(id):
     resp=requests.get(f'')
     slab = Slab.query.filter(Slab.label==id).first()
     return render_template('/slabs/slab.html',slab=slab, barcode=resp.data)
+
+@app.route('/newjob', methods=['GET','POST'])
+def newJob():
+    """ create new job """
+
+    if current_user.is_authenticated:
+        form=JobForm()
+        edges=[(str(i.id),i.name) for i in Edge.query.all()]
+        contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
+        form.edge_id.choices = edges
+        form.contractor_id.choices=contractors
+        if form.validate_on_submit():
+            job=Job(
+                name=form.name.data,
+                po_number=form.po_number.data,
+                contractor_id=form.contractor_id.data,
+                square_feet=form.sf.data,
+                installation_date=form.installation_date.data,
+                fabrication_date=form.fabrication_date.data,
+                notes=form.notes.data
+            )
+            db.session.add(job)
+            db.session.commit()
+            jobedge=JobEdge(
+                job_id=job.id,
+                edge_id=form.edge_id.data
+            )
+            db.session.add(jobedge)
+            db.session.commit()
+            flash('Success: Job Added')
+            return redirect('/')
+
+        return render_template('jobs/new_job.html',form=form)
+
+    return redirect('/')
