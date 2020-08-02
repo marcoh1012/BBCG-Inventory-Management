@@ -114,8 +114,8 @@ class Slab(db.Model):
     batch_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
     slab_num = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    length = db.Column(db.Integer, nullable=True)
-    width = db.Column(db.Integer, nullable=True)
+    length = db.Column(db.Integer, nullable=True, default=0)
+    width = db.Column(db.Integer, nullable=True, default=0)
     picture = db.Column(db.Text, nullable=True, default = '/static/pics/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
     label = db.Column(db.Integer, unique=True, nullable=True)

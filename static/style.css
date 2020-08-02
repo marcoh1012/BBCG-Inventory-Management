@@ -1,0 +1,104 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    background-image: url('/static/pics/app/background.jpg');
+    background-repeat: repeat-y;
+    background-size: cover;
+}
+
+.login_form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+}
+
+.login_page {
+    text-align: center !important;
+    width: 15em;
+}
+
+form input {
+    margin-bottom: 0.5em;
+}
+
+.top-bar {
+    background-color: black;
+    color: white;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+}
+
+.topbar {
+    display: flex;
+}
+
+.topbar a {
+    position: relative;
+    left: 80%
+}
+
+.navs a {
+    margin: 4px;
+    color: white;
+}
+
+.navs a:hover {
+    color: black
+}
+
+.slabs-info,
+.jobs-info {
+    margin-top: 3rem;
+    color: Black;
+    font-weight: bolder !important;
+}
+
+.jobs-info {
+    min-width: 70rem;
+}
+
+.slabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.slabs .card {
+    background-color: rgba(51, 49, 49, 0.466);
+    margin: 0.5rem;
+    border-radius: 1rem !important;
+    min-width: 15rem;
+    color: white;
+}
+
+.card-img-top {
+    max-height: 15rem;
+    border-radius: 1rem !important;
+}
+
+.side-nav {
+    position: relative;
+    min-width: 10rem;
+    background-color: darkorange;
+    height: fit-content;
+    margin-top: 6rem;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    padding-right: 1rem;
+    margin-left: 1rem;
+    margin-right: 0.5rem;
+    border-radius: 1rem;
+    text-align: left;
+}
+
+#navs a {
+    color: white;
+    font-size: 1rem;
+}
+
+#navs li {
+    list-style: none;
+}
