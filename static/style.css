@@ -36,8 +36,11 @@ form input {
     display: flex;
 }
 
-.topbar a {
+.topbar p {
+    display: flex;
+    align-items: center;
     position: relative;
+    color: white;
     left: 80%
 }
 
@@ -101,4 +104,33 @@ form input {
 
 #navs li {
     list-style: none;
+}
+
+.scan_barcode {
+    display: flex;
+    flex-wrap: wrap;
+    height: 60vh;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.scan_barcode form {
+    min-width: 40rem !important;
+    border: 3px solid black;
+    border-radius: 15rem;
+    padding: 3rem;
+    margin-top: 1rem;
+}
+
+#barcode_form button {
+    background-color: forestgreen;
+    border-radius: 10rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-size: 1.5rem;
+}
+
+#barcode-img {
+    margin-bottom: 0px;
 }

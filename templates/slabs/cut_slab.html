@@ -1,12 +1,14 @@
-{% extends 'base.html' %} {% block content%}
-<h2>Cutting Slab</h2>
+{% extends 'base.html' %} {% block top %}
+<div class="container topbar">
+    <h2>Cutting Slab</h2>
+    <p>{{user}}(<a class="signout" href="/logout">Sign Out</a>)</p>
+</div>{% endblock %} {% block content %}
 <div><img src="{{slab.picture}}" alt="slab picture" style="width: 300px;"></div>
-Amount Left = {{slab.amount_left}} %
+<p> Amount Left = {{slab.amount_left}} %</p>
 <form method="POST" id="cut_slab_form" enctype="multipart/form-data">
     {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
     <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
 
     <button class="btn">Enter</button>
 </form>
-<a href=/add_job>Add a Job</a>
-<a href="/scan">Scan Slab</a> {% endblock %}
+<a href=/add_job>Add a Job</a> {% endblock %}

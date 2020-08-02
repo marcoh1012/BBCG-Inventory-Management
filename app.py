@@ -47,8 +47,10 @@ def signup():
         if form.validate_on_submit():
             User.signup(form.username.data,form.password.data,form.type.data)
             db.session.commit()
+            flash('User Created','sucess')
             return redirect('/')
         return render_template('users/newuser.html', form = form)
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -62,10 +64,10 @@ def login():
         user = User.authenticate(form.username.data,form.password.data)
 
         if not user:
-            flash("Invalid Credentials Try Again")
+            flash("Invalid Credentials Try Again", 'danger')
             return redirect('/login')
         login_user(user)
-        flash('Logged In')
+        flash('Logged In','success')
         return redirect('/home')
         
 
@@ -76,14 +78,15 @@ def logout():
     """ logout user """
 
     logout_user()
+    flash('logged out', 'success')
     return redirect('/')
 
 @app.route('/home')
 def home():
     user_type=current_user.user_type.type.lower()
     slabs=Slab.query.all()
-    jobs=Job.query.all
-    return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs)
+    jobs=Job.query.all()
+    return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs, user=current_user.username)
     
 ##### Slab Routes #####
 
@@ -98,9 +101,9 @@ def scan():
             if slab is None:
                 flash("No Slab Found")
                 return redirect('/scan')
-            flash('Slab Found')
+            flash('Slab Found', "success")
             return redirect(f'/cut_slab/{slab.label}')
-        return render_template('slabs/scan.html', form=form)
+        return render_template('slabs/scan.html', form=form, user=current_user.username)
     return redirect('/home')
 
 @app.route('/cut_slab/<int:id>', methods = ['GET', 'POST'])

@@ -13,6 +13,9 @@
         <div class="login_form">
             <div class="login_page">
                 <h3>Log In</h3>
+                {% for category, message in get_flashed_messages(with_categories=True) %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
                 <form method="POST" id="user_form">
                     {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
                     <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}

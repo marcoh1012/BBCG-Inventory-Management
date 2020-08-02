@@ -1,11 +1,19 @@
-{% extends 'base.html' %} {% block content%}
-<div class="scan_barcode">
-    <h3>Scan Slab Barcode</h3>
-    <form method="POST" id="user_form">
-        {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+{% extends 'base.html' %} {% block top %}
+<div class="container topbar">
+    <h2>Scan Slab</h2>
+    <p>{{user}}(<a class="signout" href="/logout">Sign Out</a>)</p>
+</div>{% endblock %} {% block content%}
 
-        <button class="btn">scan</button>
-    </form>
+
+<div class="scan_barcode container">
+    <div>
+        <div id='barcode-img'><img src="http://barcodes4.me/barcode/c128b/ScanBarcodeLikeThisOne.gif?IsTextDrawn=1" alt=""></div>
+        <form method="POST" id="barcode_form">
+            {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+
+            <button class="btn">Search</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
