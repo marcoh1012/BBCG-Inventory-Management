@@ -48,6 +48,6 @@ class JobForm(FlaskForm):
     sf=FloatField('Squared Feet')
     edge_id=SelectField('Edge Detail')
     lf=IntegerField('linear feet')
-    installation_date=DateField(' Installation Date',format='%Y-%m-%d')
+    installation_date=DateField(' Installation Date yyyy-mm-dd',format='%Y-%m-%d')
     fabrication_date=DateField('Fabrication Date',format='%Y-%m-%d')
     notes=TextAreaField('Notes')
