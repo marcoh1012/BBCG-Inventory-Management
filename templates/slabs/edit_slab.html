@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% block content%}
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block content%}
 <div class="container">
     <h2>Slab info</h2>
     <form method="POST" id="user_form">

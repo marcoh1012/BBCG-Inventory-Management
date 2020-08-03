@@ -1,7 +1,7 @@
 <!-- admin user type -->
-{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %}
 <!-- office user type -->
-{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
+{% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
 <!-- jobs info -->
 <div class="jobs-info">
     <div>

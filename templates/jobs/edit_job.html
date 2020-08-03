@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% block content%}
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block content%}
 <div class="container">
     <h2>Edit Job</h2>
     <form method="POST" id="cut_slab_form" enctype="multipart/form-data">
