@@ -121,7 +121,7 @@ class Slab(db.Model):
     picture = db.Column(db.Text, nullable=True, default = '/static/pics/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
     label = db.Column(db.Integer, unique=True, nullable=True)
-    # label_picture = db.Column(db.Text,nullable=True)
+    label_picture = db.Column(db.Text,nullable=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     amount_left = db.Column(db.Integer, default = 100)
     completed = db.Column(db.Boolean, default=False)
@@ -142,11 +142,12 @@ class Slab(db.Model):
                 'static/pics/barcodes', f'{label_id}.jpg'
                 ), 'wb') as f:
                 f.write(resp.content)
+            self.label_picture = os.path.join('/static/pics/barcodes', f'{label_id}.jpg')
         return label_id
 
     def calculate_area(self):
         """ Calculate square footage of a slab  input is in  inches"""
-        sf = (int(self.length) * int(self.width)) / 144
+        sf = round((int(self.length) * int(self.width)) / 144,2)
         return sf
     def cut_slab(self,percent):
         """ calculate the amount of slab left """
