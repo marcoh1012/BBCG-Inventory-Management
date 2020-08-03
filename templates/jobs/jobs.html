@@ -1,0 +1,38 @@
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
+<!-- jobs info -->
+<div class="jobs-info">
+    <div>
+        <h3>Jobs</h3>
+    </div>
+    <div class="jobs container">
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">PO Number</th>
+                    <th scope="col">Installation Date</th>
+                    <th scope="col">Edit/Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <th scope="row">{{job.name}}</th>
+                    <td>{{job.contractor.name}}</td>
+                    <td>{{job.po_number}}</td>
+                    <td>{{job.installation_date}}</td>
+                    <td> <a href="/jobs/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
+                        <a href="/jobs/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

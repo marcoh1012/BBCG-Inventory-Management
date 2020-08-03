@@ -2,74 +2,16 @@
 <div class=" container info-body d-flex justify-content-center">
     <div class="col-l-2 side-nav">
         <div class="list-group" id="list-tab" role="tablist">
-            <a class="list-group-item " id="slabs" href="" role="tab">Slabs</a>
-            <a class="list-group-item " id="jobs" href="" role="tab">Jobs</a>
+            <a class="list-group-item " id="slabs" href="/home" role="tab">Slabs</a>
+            <a class="list-group-item " id="jobs" href="/jobs" role="tab">Jobs</a>
             <a class="list-group-item " id="list-look-up-slab-list" href="/scan">Look Up Slab</a>
             <a class="list-group-item " id="list-add-slab-list" href="/recieve">Add Slab</a>
             <a class="list-group-item " href="/job/new">Add Job</a>
         </div>
     </div>
     <div class="col col-l-10">
-        <!-- slab info -->
-        <div class="slabs-info">
-            <div>
-                <h3>Slabs</h3>
-            </div>
-            <div class="slabs">
-                {% for slab in slabs %}
-                <div class="card">
-                    <img src="{{slab.picture}}" class="card-img-top" alt="slab picture">
-                    <div class="card-body">
-                        <h5 class="card-title">{{slab.vendor.name}} {{slab.color.name}}</h5>
-                        <p class="card-text">
+        {% block display %} {% endblock %}
 
-                            <li>Length: {{slab.length}}</li>
-                            <li>Width: {{slab.width}}</li>
-                            <li>Remaining Material: {{slab.amount_left}}%</li>
-
-                        </p>
-                        <a href="/slab/{{slab.label}}" class="btn btn-success info-btn">INFO</a>
-                        <a href="/slab/{{slab.label}}/edit" class="btn btn-primary edit-btn">EDIT</a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        <!-- jobs info -->
-        <div class="jobs-info" style="display: none;">
-            <div>
-                <h3>Jobs</h3>
-            </div>
-            <div class="jobs container">
-                <table class="table table-hover table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Customer</th>
-                            <th scope="col">PO Number</th>
-                            <th scope="col">Installation Date</th>
-                            <th scope="col">Edit/Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for job in jobs %}
-                        <tr>
-                            <th scope="row">{{job.name}}</th>
-                            <td>{{job.contractor.name}}</td>
-                            <td>{{job.po_number}}</td>
-                            <td>{{job.installation_date}}</td>
-                            <td> <a href="/jobs/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
-                                <a href=""> <i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,30 @@
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
+<!-- slab info -->
+<div class="slabs-info">
+    <div>
+        <h3>Slabs</h3>
+    </div>
+    <div class="slabs">
+        {% for slab in slabs %}
+        <div class="card">
+            <img src="{{slab.picture}}" class="card-img-top" alt="slab picture">
+            <div class="card-body">
+                <h5 class="card-title">{{slab.vendor.name}} {{slab.color.name}}</h5>
+                <p class="card-text">
+
+                    <li>Length: {{slab.length}}</li>
+                    <li>Width: {{slab.width}}</li>
+                    <li>Remaining Material: {{slab.amount_left}}%</li>
+
+                </p>
+                <a href="/slab/{{slab.label}}" class="btn btn-success info-btn">INFO</a>
+                <a href="/slab/{{slab.label}}/edit" class="btn btn-primary edit-btn">EDIT</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

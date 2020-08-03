@@ -202,6 +202,9 @@ nav {
     .navbar-toggler {
         display: block !important
     }
+    .scan_barcode form {
+        min-width: 30rem !important;
+    }
 }
 
 @media only screen and (max-width:720px) {
@@ -223,5 +226,22 @@ nav {
     .info-btn,
     .edit-btn {
         font-size: 0.75rem;
+    }
+    .scan_barcode form {
+        min-width: 20rem !important;
+        border-radius: 10rem;
+        padding: 1.5rem;
+    }
+    #barcode_form button {
+        border-radius: 10rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media only screen and (max-width:400px) {
+    .slabs .card {
+        max-width: 18rem;
     }
 }

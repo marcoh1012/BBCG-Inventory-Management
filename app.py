@@ -49,8 +49,8 @@ def signup():
             User.signup(form.username.data,form.password.data,form.type.data)
             db.session.commit()
             flash('User Created','sucess')
-            return redirect('/')
-        return render_template('users/newuser.html', form = form)
+            return redirect('/home')
+        return render_template('users/newuser.html', form = form, user=current_user)
     flash('Please Sign In First', 'danger')
     return redirect('/')
 
@@ -91,7 +91,7 @@ def home():
         return redirect('/scan')
     slabs=Slab.query.all()
     jobs=Job.query.all()
-    return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs, user=current_user)
+    return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user)
     
 ##### Slab Routes #####
 
@@ -108,7 +108,7 @@ def scan():
                 return redirect('/scan')
             flash('Slab Found', "success")
             return redirect(f'/cut_slab/{slab.label}')
-        return render_template('slabs/scan.html', form=form, user=current_user.username)
+        return render_template('slabs/scan.html', form=form, user=current_user)
     return redirect('/home')
 
 @app.route('/cut_slab/<int:id>', methods = ['GET', 'POST'])
@@ -139,7 +139,7 @@ def cut_slab(id):
             db.session.commit()
             flash('Success', 'success')
             return redirect(f'/scan')
-        return render_template('slabs/cut_slab.html', form=form, slab=slab,user=current_user.username)
+        return render_template('slabs/cut_slab.html', form=form, slab=slab,user=current_user)
     return redirect('/home')
 
 @app.route('/slab/<int:id>')
@@ -152,7 +152,7 @@ def slab(id):
             flash("No Slab Found", 'danger')
             return redirect('/scan')
         flash('Slab Found', 'success')
-        return render_template('slabs/slab.html', slab=slab, user=current_user.username)
+        return render_template('slabs/slab.html', slab=slab, user=current_user)
 
     return redirect('/home')
 
@@ -181,7 +181,7 @@ def editslab(id):
             flash('Edited','Success')
             return redirect(f'/slab/{id}')
         flash('Slab Found','success')
-        return render_template('slabs/edit_slab.html', form=form, slab=slab,user=current_user.username)
+        return render_template('slabs/edit_slab.html', form=form, slab=slab,user=current_user)
 
     return redirect('/home')
 
@@ -223,10 +223,18 @@ def recieve():
 
             return redirect(f'/slab/{slab.label}')
                 
-        return render_template('/slabs/recieve.html', form = form,user=current_user.username)
+        return render_template('/slabs/recieve.html', form = form,user=current_user)
 
     return redirect('/')
 
+@app.route('/slabs/<int:id>/delete')
+def deleteSlab(id):
+    """ delete slab """
+
+    slab=Slab.query.filter(Slab.label==id).first()
+    db.session.delete(slab)
+    db.session.commit()
+    return redirect('/home')
 
 
 @app.route('/job/new', methods=['GET','POST'])
@@ -260,12 +268,14 @@ def newJob():
             flash('Success: Job Added')
             return redirect('/')
 
-        return render_template('jobs/new_job.html', form=form, user=current_user.username)
+        return render_template('jobs/new_job.html', form=form, user=current_user)
 
     return redirect('/')
 
 @app.route('/jobs/<int:id>/edit', methods=['GET','POST'])
 def editJob(id):
+    """ edit existing job """
+
     if current_user.is_authenticated:
         job=Job.query.get(id)
         form=JobForm(obj=job)
@@ -276,9 +286,24 @@ def editJob(id):
         form.lf=JobEdge.query.filter(JobEdge.job_id==job.id).first()
         if form.validate_on_submit():
             return('success')
-        return render_template('/jobs/edit_job.html', form = form, user=current_user.username)
+        return render_template('/jobs/edit_job.html', form = form, user=current_user)
 
     
     return redirect('/')
+
+@app.route('/jobs')
+def viewJobs():
+    """ view all jobs """
+    jobs=Job.query.all()
+    return render_template('/jobs/jobs.html',jobs=jobs, user=current_user)
+
+@app.route('/jobs/<int:id>/delete')
+def deleteJob(id):
+    """ delete job """
+
+    job=Job.query.get(id)
+    db.session.delete(job)
+    db.session.commit()
+    return redirect('/jobs')
 
 

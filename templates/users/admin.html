@@ -1,6 +1,18 @@
-{% extends 'base.html' %} {% block content%}
-<div class="container">
-    <div>Admin</div>
-    <li><a href="/signup">Create Account</a></li>
-    <li><a href="/logout">Log out</a></li>
-</div> {% endblock %}
+{% extends 'base.html' %}{% block content%}
+<div class=" container info-body d-flex justify-content-center">
+    <div class="col-l-2 side-nav">
+        <div class="list-group" id="list-tab" role="tablist">
+            <a class="list-group-item " id="slabs" href="/home" role="tab">Slabs</a>
+            <a class="list-group-item " id="jobs" href="/jobs" role="tab">Jobs</a>
+            <a class="list-group-item " id="list-look-up-slab-list" href="/scan">Look Up Slab</a>
+            <a class="list-group-item " id="list-add-slab-list" href="/recieve">Add Slab</a>
+            <a class="list-group-item " href="/job/new">Add Job</a>
+            <a class="list-group-item " id="create-account" href="/signup">Create Account</a>
+        </div>
+    </div>
+    <div class="col col-l-10">
+        {% block display %} {% endblock %}
+
+    </div>
+</div>
+{% endblock %}
