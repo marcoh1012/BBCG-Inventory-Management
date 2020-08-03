@@ -1,5 +1,6 @@
 import os
 import requests
+import shutil
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
@@ -138,7 +139,7 @@ def cut_slab(id):
             db.session.commit()
             flash('Success')
             return redirect(f'/scan')
-        return render_template('slabs/cut_slab.html', form=form, slab=slab)
+        return render_template('slabs/cut_slab.html', form=form, slab=slab,user=current_user.username)
     return redirect('/home')
 
 @app.route('/slab/<int:id>')
@@ -151,7 +152,7 @@ def slab(id):
             flash("No Slab Found")
             return redirect('/scan')
         flash('Slab Found')
-        return render_template('slabs/slab.html', slab=slab)
+        return render_template('slabs/slab.html', slab=slab, user=current_user.username)
 
     return redirect('/home')
 
@@ -180,7 +181,7 @@ def editslab(id):
             flash('Edited','Success')
             return redirect(f'/slab/{id}')
         flash('Slab Found','success')
-        return render_template('slabs/edit_slab.html', form=form, slab=slab)
+        return render_template('slabs/edit_slab.html', form=form, slab=slab,user=current_user.username)
 
     return redirect('/home')
 
@@ -215,22 +216,18 @@ def recieve():
                 slab.picture = f'/static/pics/{filename}'
             db.session.add(slab)
             db.session.commit()
-            print(f'**********************{form.picture.data}')
             slab.label = slab.create_label_id()
             db.session.commit()
+
+            # create_store_label(slab.label)
+
             return redirect(f'/slab/{slab.label}')
                 
-        return render_template('/slabs/recieve.html', form = form)
+        return render_template('/slabs/recieve.html', form = form,user=current_user.username)
 
     return redirect('/')
 
 
-@app.route('/slab/<int:id>/barcode')
-def barcode(id):
-    """ Create barcode and return it """
-    resp=requests.get(f'')
-    slab = Slab.query.filter(Slab.label==id).first()
-    return render_template('/slabs/slab.html',slab=slab, barcode=resp.data)
 
 @app.route('/job/new', methods=['GET','POST'])
 def newJob():
@@ -263,7 +260,7 @@ def newJob():
             flash('Success: Job Added')
             return redirect('/')
 
-        return render_template('jobs/new_job.html', form=form)
+        return render_template('jobs/new_job.html', form=form, user=current_user.username)
 
     return redirect('/')
 
@@ -279,7 +276,9 @@ def editJob(id):
         form.lf=JobEdge.query.filter(JobEdge.job_id==job.id).first()
         if form.validate_on_submit():
             return('success')
-        return render_template('/jobs/edit_job.html', form = form)
+        return render_template('/jobs/edit_job.html', form = form, user=current_user.username)
 
     
     return redirect('/')
+
+
