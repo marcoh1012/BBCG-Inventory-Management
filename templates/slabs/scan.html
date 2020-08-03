@@ -1,10 +1,4 @@
-{% extends 'base.html' %} {% block top %}
-<div class="container topbar">
-    <h2>Scan Slab</h2>
-    <p>{{user}}(<a class="signout" href="/logout">Sign Out</a>)</p>
-</div>{% endblock %} {% block content%}
-
-
+{% extends 'base.html' %} {% block content%}
 <div class="scan_barcode container">
     <div>
         <div id='barcode-img'><img src="http://barcodes4.me/barcode/c128b/ScanBarcodeLikeThisOne.gif?IsTextDrawn=1" alt=""></div>

@@ -25,7 +25,7 @@ form input {
 }
 
 .top-bar {
-    background-color: black;
+    background-color: black !important;
     color: white;
     height: 5rem;
     display: flex;
@@ -60,10 +60,6 @@ form input {
     font-weight: bolder !important;
 }
 
-.jobs-info {
-    min-width: 70rem;
-}
-
 .slabs {
     display: flex;
     flex-wrap: wrap;
@@ -83,27 +79,13 @@ form input {
 }
 
 .side-nav {
-    position: relative;
+    background-color: rgba(231, 108, 26, 0.836);
     min-width: 10rem;
-    background-color: darkorange;
     height: fit-content;
     margin-top: 6rem;
-    padding-bottom: 2rem;
-    padding-top: 2rem;
-    padding-right: 1rem;
-    margin-left: 1rem;
     margin-right: 0.5rem;
     border-radius: 1rem;
     text-align: left;
-}
-
-#navs a {
-    color: white;
-    font-size: 1rem;
-}
-
-#navs li {
-    list-style: none;
 }
 
 .scan_barcode {
@@ -133,4 +115,40 @@ form input {
 
 #barcode-img {
     margin-bottom: 0px;
+}
+
+form button {
+    background-image: url('/static/pics/app/button.jpg');
+    border-radius: 50rem !important;
+    width: 40%;
+    margin-top: 0.4rem;
+    color: white !important;
+    font-size: 2rem;
+    height: 3rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.slab-img,
+.slab-img-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.list-group a {
+    color: white;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.list-group a:hover {
+    background-color: rgb(2, 22, 83);
+}
+
+.fa-trash-alt {
+    color: red;
 }

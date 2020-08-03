@@ -5,6 +5,7 @@ $('#slabs')
     .on('click', viewSlabs)
 
 function viewJobs(evt) {
+    evt.preventDefault()
     $('.slabs-info')
         .hide();
     $('.jobs-info')
@@ -12,6 +13,7 @@ function viewJobs(evt) {
 }
 
 function viewSlabs(evt) {
+    evt.preventDefault()
     $('.slabs-info')
         .show();
     $('.jobs-info')

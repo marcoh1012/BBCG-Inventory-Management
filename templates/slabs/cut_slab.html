@@ -1,14 +1,25 @@
-{% extends 'base.html' %} {% block top %}
-<div class="container topbar">
-    <h2>Cutting Slab</h2>
-    <p>{{user}}(<a class="signout" href="/logout">Sign Out</a>)</p>
-</div>{% endblock %} {% block content %}
-<div><img src="{{slab.picture}}" alt="slab picture" style="width: 300px;"></div>
-<p> Amount Left = {{slab.amount_left}} %</p>
-<form method="POST" id="cut_slab_form" enctype="multipart/form-data">
-    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
-    <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <div class="slab-img">
+        <img src="{{slab.picture}}" alt="slab picture" style="width: 300px; ">
+    </div>
+    <div class="slab-img-info">
+        <p> Amount Left = {{slab.amount_left}} %</p>
 
-    <button class="btn">Enter</button>
-</form>
-<a href=/add_job>Add a Job</a> {% endblock %}
+
+    </div>
+
+    <form method="POST" id="cut_slab_form" enctype="multipart/form-data">
+        {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+
+        <div class="buttons">
+            <button class="btn">Enter</button>
+        </div>
+    </form>
+    <div>
+        <p> Job Name not found?<br>
+            <a href=/job/new>Add a Job</a>
+        </p>
+    </div>
+</div>{% endblock %}

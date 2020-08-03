@@ -1,9 +1,12 @@
-{% extends 'base.html' %} {% block content%}
-<h2>Add New Job</h2>
-<form method="POST" id="cut_slab_form" enctype="multipart/form-data">
-    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
-    <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+{% extends "base.html" %} {% block links %}{{super()}}
+<link rel="stylesheet" href="static/style.css"> {% endblock %}{% block content %}
+<div class="container">
+    <h2>Add New Job</h2>
+    <form method="POST" id="new_job_form" enctype="multipart/form-data">
+        {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
 
-    <button class="btn">Enter</button>
-</form>
+        <button class="btn">Enter</button>
+    </form>
+</div>
 {% endblock %}

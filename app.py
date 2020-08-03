@@ -84,6 +84,10 @@ def logout():
 @app.route('/home')
 def home():
     user_type=current_user.user_type.type.lower()
+    if user_type == 'reciever':
+        return redirect('/recieve')
+    if user_type == 'fabricator':
+        return redirect('/scan')
     slabs=Slab.query.all()
     jobs=Job.query.all()
     return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs, user=current_user.username)
@@ -164,7 +168,7 @@ def editslab(id):
         form.color.choices=colors
         form.type_id.choices=types
         if slab is None:
-            flash("No Slab Found")
+            flash("No Slab Found", 'danger')
             return redirect('/scan')
         if form.validate_on_submit():
             slab.vendor_id = form.vendor.data
@@ -173,9 +177,9 @@ def editslab(id):
             slab.length = form.length.data
             slab.width = form.width.data 
             slab.type_id = form.type_id.data
-            slab.completed = form.completed.data
+            flash('Edited','Success')
             return redirect(f'/slab/{id}')
-        flash('Slab Found')
+        flash('Slab Found','success')
         return render_template('slabs/edit_slab.html', form=form, slab=slab)
 
     return redirect('/home')
@@ -259,7 +263,7 @@ def newJob():
             flash('Success: Job Added')
             return redirect('/')
 
-        return render_template('jobs/new_job.html',form=form)
+        return render_template('jobs/new_job.html', form=form)
 
     return redirect('/')
 
