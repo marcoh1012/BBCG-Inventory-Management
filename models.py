@@ -114,7 +114,7 @@ class Slab(db.Model):
     vendor_id = db.Column(db.Integer, db.ForeignKey('vendors.id'), primary_key=True, autoincrement=False)
     color_id = db.Column(db.Integer, db.ForeignKey('colors.id'), primary_key=True, autoincrement=False)
     batch_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    slab_num = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    slab_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
 
     length = db.Column(db.Integer, nullable=True, default=0)
     width = db.Column(db.Integer, nullable=True, default=0)

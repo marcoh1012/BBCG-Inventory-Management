@@ -91,7 +91,7 @@ def home():
         return redirect('/scan')
     slabs=Slab.query.all()
     jobs=Job.query.all()
-    return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs, user=current_user.username)
+    return render_template(f'users/{user_type}.html', slabs=slabs, jobs=jobs, user=current_user)
     
 ##### Slab Routes #####
 

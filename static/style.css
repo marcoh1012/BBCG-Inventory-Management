@@ -7,6 +7,11 @@ body {
     background-size: cover;
 }
 
+.login-logo {
+    max-width: 12rem;
+    border-radius: 60rem;
+}
+
 .login_form {
     display: flex;
     justify-content: center;
@@ -32,16 +37,22 @@ form input {
     align-items: center;
 }
 
-.topbar {
-    display: flex;
+.topbar p {
+    /* display: flex; */
+    align-items: center;
+    /* position: relative; */
+    color: white;
+    /* left: 80% */
 }
 
-.topbar p {
-    display: flex;
-    align-items: center;
-    position: relative;
-    color: white;
-    left: 80%
+.navbar-toggler {
+    display: none;
+    color: black !important;
+    background-color: white !important;
+}
+
+.nav-right {
+    float: right;
 }
 
 .navs a {
@@ -69,12 +80,11 @@ form input {
     background-color: rgba(51, 49, 49, 0.466);
     margin: 0.5rem;
     border-radius: 1rem !important;
-    min-width: 15rem;
+    max-width: 13rem;
     color: white;
 }
 
 .card-img-top {
-    max-height: 15rem;
     border-radius: 1rem !important;
 }
 
@@ -169,4 +179,49 @@ form button {
 
 .slab-page-info p {
     width: 100%;
+}
+
+nav {
+    background-color: black;
+}
+
+
+/* cellphone */
+
+@media only screen and (max-width: 992px) {
+    .side-nav,
+    .topbar p {
+        display: none;
+    }
+    .slabs .card {
+        max-width: 12.5rem;
+    }
+    .nav-right p {
+        display: none;
+    }
+    .navbar-toggler {
+        display: block !important
+    }
+}
+
+@media only screen and (max-width:720px) {
+    .slabs {
+        justify-content: center;
+    }
+    .slabs .card {
+        max-width: 12.5rem;
+    }
+}
+
+@media only screen and (max-width:576px) {
+    .slabs {
+        justify-content: center;
+    }
+    .slabs .card {
+        max-width: 10rem;
+    }
+    .info-btn,
+    .edit-btn {
+        font-size: 0.75rem;
+    }
 }
