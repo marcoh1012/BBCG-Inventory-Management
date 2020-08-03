@@ -1,9 +1,17 @@
 {% extends 'base.html' %} {% block content%}
-<h3> {{slab.vendor.name}} {{slab.color.name}} {{slab.type.name}}</h3>
-<img src="{{slab.picture}}" alt="slab picture" style="width: 300px;">
-<h5>Batch Number: {{slab.batch_num}} Slab #: {{slab.slab_num}}</h5>
-<h6>ID: {{slab.label}}</h6>
-<p>Length: {{slab.length}} Width: {{slab.width}}</p>
-<p>Square Feet: {{slab.calculate_area()}}sf</p>
-<P>More data to come</P>
-<img src="https://barcodes4.me/barcode/c39/{{slab.label}}.jpg?IsTextDrawn=1&TextSize=15" alt=""> {% endblock %}
+<div class="container slab-page">
+    <h3> {{slab.vendor.name}} {{slab.color.name}} {{slab.type.name}}</h3>
+    <div id='slab-img'>
+        <img src="{{slab.picture}}" alt="slab picture" style="width: 300px;">
+    </div>
+    <div class="slab-page-info">
+        <h5 style="width: 100%;">Batch Number: {{slab.batch_num}} Slab #: {{slab.slab_num}}</h5>
+        <h6 style="width: 100%;">ID: {{slab.label}}</h6>
+        <p>Length: {{slab.length}} Width: {{slab.width}}</p>
+        <p>Square Feet: {{slab.calculate_area()}}sf</p>
+        <P>More data to come</P>
+    </div>
+    <div class="slab-barcode">
+        <img src="https://barcodes4.me/barcode/c39/{{slab.label}}.jpg?IsTextDrawn=1&TextSize=15" alt="">
+    </div>
+</div> {% endblock %}

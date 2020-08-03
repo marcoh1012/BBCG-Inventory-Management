@@ -152,3 +152,21 @@ form button {
 .fa-trash-alt {
     color: red;
 }
+
+
+/* slabs page */
+
+.slab-page h3,
+#slab-img,
+.slab-page-info,
+.slab-barcode {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.slab-page-info p {
+    width: 100%;
+}

@@ -137,7 +137,7 @@ def cut_slab(id):
             slab_job = SlabJob.query.get((slab.label,job.id))
             slab_job.percent_used=form.cut_amount.data
             db.session.commit()
-            flash('Success')
+            flash('Success', 'success')
             return redirect(f'/scan')
         return render_template('slabs/cut_slab.html', form=form, slab=slab,user=current_user.username)
     return redirect('/home')
@@ -149,9 +149,9 @@ def slab(id):
         slab = Slab.query.filter(Slab.label==id).first()
 
         if slab is None:
-            flash("No Slab Found")
+            flash("No Slab Found", 'danger')
             return redirect('/scan')
-        flash('Slab Found')
+        flash('Slab Found', 'success')
         return render_template('slabs/slab.html', slab=slab, user=current_user.username)
 
     return redirect('/home')
