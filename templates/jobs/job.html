@@ -9,7 +9,7 @@
     <div class="job-page-info">
         <p>PO Number: {{job.po_number}}</p>
         <p>Instalation Date: {{job.installation_date}} </p>
-        <p>Fabrication Date: {{job.fabrcation_date}}</p>
+        <p>Fabrication Date: {{job.fabrication_date}}</p>
         <p>Company: {{job.contractor.name}}</p>
         <hr style="color: black;">
         <div>
@@ -49,12 +49,13 @@
             </div>
 
             <div class="modal-body">
-                <form action="/addcutout" method="POST"></form>
-                <input type="text">
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <form action="/jobs/{{job.id}}/addcutout" method="POST" id='form2'>
+                    {{ forms[1].hidden_tag() }} {% for field in forms[1] if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="form2" value="Submit">Add</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
             </div>
@@ -62,7 +63,7 @@
         </div>
     </div>
 </div>
-<!-- Cut Out Modal -->
+<!-- edge Modal -->
 <div class="modal fade" id="addedge" tabindex="-1" role="dialog" aria-labelledby="addedge" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="form">
         <div class="modal-content">
@@ -74,12 +75,13 @@
             </div>
 
             <div class="modal-body">
-                <form action="/addcutout" method="POST"></form>
-                <input type="text">
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <form action="/jobs/{{job.id}}/addedge" method="POST" id='form3'>
+                    {{ forms[2].hidden_tag() }} {% for field in forms[2] if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="form3" value="Submit">Add</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
             </div>
@@ -99,12 +101,15 @@
             </div>
 
             <div class="modal-body">
-                <form action="/addcutout" method="POST"></form>
-                <input type="text">
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <form action="/jobs/{{job.id}}/addslab" id='form1' method="POST">
+                    {{ forms[0].hidden_tag() }} {% for field in forms[0] if field.widget.input_type != 'hidden'%} {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+
+
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="form1">Add</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
             </div>

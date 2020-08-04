@@ -6,6 +6,26 @@
 <div class="slabs-info">
     <div>
         <h3>Slabs</h3>
+        <div style="display: flex;">
+            <div class="dropdown">
+                <button class="btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort By:
+            </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/slabs/sort/name-asc">Name&#8593;</a>
+                    <a class="dropdown-item" href="/slabs/sort/name-desc">Name&#8595;</a>
+                    <a class="dropdown-item" href="/slabs/sort/date-asc">Date&#8593;</a>
+                    <a class="dropdown-item" href="/slabs/sort/date-desc">Date&#8595;</a>
+                    <!-- <a class="dropdown-item" href="/slabs/sf-asc">Square Footage &#8593;</a> -->
+                    <!-- <a class="dropdown-item" href="/slabs/sf-desc">Square Footage &#8595;</a> -->
+                    <a class="dropdown-item" href="/slabs/sort/completed">Completed</a>
+                </div>
+            </div>
+
+            <div class="search">
+                <form style="display: flex;" action="/slabs/search" method='POST'><input type="text" name='search-term' placeholder="Search"><button class="search-btn"><i class="fas fa-search"></i></button></form>
+            </div>
+        </div>
     </div>
     <div class="slabs">
         {% for slab in slabs %}

@@ -48,6 +48,20 @@ class JobForm(FlaskForm):
     sf=FloatField('Squared Feet')
     edge_id=SelectField('Edge Detail')
     lf=IntegerField('linear feet')
-    installation_date=DateField(' Installation Date yyyy-mm-dd',format='%Y-%m-%d')
-    fabrication_date=DateField('Fabrication Date',format='%Y-%m-%d')
+    installation_date=DateField(' Installation Date yyyy-mm-dd')
+    fabrication_date=DateField('Fabrication Date')
     notes=TextAreaField('Notes')
+
+##### Adding Info to Jobs Forms ####
+
+class AddCutoutForm(FlaskForm):
+    """ Add Cutout to Job Form """
+
+    cutout = SelectField('Cutout Name', validators=[DataRequired()])
+    number = IntegerField('Number of Cutouts', validators=[DataRequired()])
+
+class AddEdgeForm(FlaskForm):
+    """" Add Edge Detail to Job Form """
+
+    edge = SelectField('Cutout Name', validators=[DataRequired()])
+    lf = IntegerField('Number of Cutouts', validators=[DataRequired()])

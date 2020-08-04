@@ -12,8 +12,8 @@ from forms import *
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -307,9 +307,118 @@ def delete_job(id):
     db.session.commit()
     return redirect('/jobs')
 
+
+########## Job Page routes ##########
 @app.route('/jobs/<int:id>')
 def view_job(id):
     job=Job.query.get_or_404(id)
     cutouts= db.session.query(Cutout.name, JobCutout.cutout_count).filter(JobCutout.job_id==job.id).join(Cutout).all()
     edges = db.session.query(JobEdge.lf, Edge.name).filter(JobEdge.job_id==job.id).join(Edge).all()
-    return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, user=current_user)
+    slabform=ScanBarcodeForm()
+    cutoutform=AddCutoutForm()
+    cutoutform.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
+    edgeform=AddEdgeForm()
+    edgeform.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
+    forms=[slabform,cutoutform,edgeform]
+    return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
+
+@app.route('/jobs/<int:id>/addslab', methods=['POST'])
+def add_slab(id):
+    """ Add slab to job """
+
+    if current_user.is_authenticated:    
+        form = ScanBarcodeForm(request.form)
+        if form.validate_on_submit():
+            SJ=SlabJob(slab_id=form.label.data,job_id=id)
+            db.session.add(SJ)
+            db.session.commit()
+            flash('Slab Added','success')
+            return redirect(f'/jobs/{id}')
+    flash('Error Occured, Try Again', 'danger')
+    return redirect(f'/jobs/{id}')
+
+@app.route('/jobs/<int:id>/addcutout', methods=['POST'])
+def addcutout(id):
+    """ Add Cutout to job """
+
+    if current_user.is_authenticated:    
+        form = AddCutoutForm(request.form)
+        form.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
+        if form.validate_on_submit():
+            JC=JobCutout(job_id=id, cutout_id=form.cutout.data, cutout_count=form.number.data)
+            db.session.add(JC)
+            db.session.commit()
+            flash('Cutout Added','success')
+            return redirect(f'/jobs/{id}')
+    flash('Error Occured, Try Again', 'danger')
+    return redirect(f'/jobs/{id}')
+
+@app.route('/jobs/<int:id>/addedge', methods=['POST'])
+def addedge(id):
+    """ Add Edge to Job """
+
+    if current_user.is_authenticated:    
+        form = AddEdgeForm(request.form)
+        form.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
+        if form.validate_on_submit():
+            JE=JobEdge(job_id=id, edge_id=form.edge.data, lf=form.lf.data)
+            db.session.add(JE)
+            db.session.commit()
+            flash('Cutout Added','success')
+            return redirect(f'/jobs/{id}')
+    flash('Error Occured, Try Again', 'danger')
+    return redirect(f'/jobs/{id}')
+
+
+######### Sorting Routes########
+@app.route('/slabs/search', methods=['POST'])
+def search_slabs():
+    """ search for slabs with keywords """
+
+    if current_user.is_authenticated:
+        term=request.form.get('search-term')
+        results=[]
+        vendors=Slab.query.join(Vendor).filter(Vendor.name.ilike(term)).all()
+        if len(vendors) != 0:
+            results.append(vendors)
+        colors=Slab.query.join(Color).filter(Color.name.ilike(term)).all()
+        if len(colors) != 0:
+            results.append(colors)
+        if term.isnumeric():
+            slabs=Slab.query.filter(Slab.label==term)
+            if slabs is not None:
+                results.append(slabs)
+        types=Slab.query.join(Slab_Type).filter(Slab_Type.name.ilike(term)).all()
+        if len(types) != 0:
+            results.append(types)
+
+        full_results=[slab for sublist in results for slab in sublist]
+
+        if len(full_results)==0:
+            flash('No Slabs Found', 'danger')
+            return redirect('/')
+        
+        return render_template('/slabs/slabs.html', slabs=full_results, user=current_user)
+       
+@app.route('/slabs/sort/<sort_type>')
+def sort_slabs(sort_type):
+    """ Slabbs Sort By """
+    
+    if current_user.is_authenticated:
+        if sort_type == 'name-asc':
+            slabs=Slab.query.join(Vendor).order_by(Vendor.name).all()
+        elif sort_type == 'name-desc':
+            slabs=Slab.query.join(Vendor).order_by(Vendor.name.desc()).all()
+        elif sort_type == 'date-asc':
+            slabs=Slab.query.order_by(Slab.created).all()
+        elif sort_type == 'date-desc':
+            slabs=Slab.query.order_by(Slab.created.desc()).all()
+        elif sort_type == 'completed':
+            slabs=Slab.query.filter(Slab.completed==True).all()
+        else:
+            flash("Not a Valid Sort Type", 'danger')
+            return redirect('/home')
+
+        return render_template('/slabs/slabs.html',slabs=slabs, user=current_user)
+
+

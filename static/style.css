@@ -227,6 +227,25 @@ nav {
     background-color: rgba(231, 108, 26, 0.836);
 }
 
+.search form,
+.search button {
+    display: flex;
+    max-height: 2.5rem;
+    margin-left: 1rem;
+}
+
+.search-btn {
+    background-color: black !important;
+    height: 1.8rem;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    align-items: center;
+}
+
+.search-btn i {
+    font-size: 0.8rem !important;
+}
+
 
 /* cellphone */
 
