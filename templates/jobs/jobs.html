@@ -12,17 +12,17 @@
               Sort By:
             </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="/jobs/name-asc">Name&#8593;</a>
-                    <a class="dropdown-item" href="/jobs/name-desc">Name&#8595;</a>
-                    <a class="dropdown-item" href="/jobs/date-asc">Date&#8593;</a>
-                    <a class="dropdown-item" href="/jobs/date-desc">Date&#8595;</a>
-                    <a class="dropdown-item" href="/jobs/cust-asc">Customer &#8593;</a>
-                    <a class="dropdown-item" href="/jobs/cust-desc">Customer &#8595;</a>
+                    <a class="dropdown-item" href="/jobs/sort/name-asc">Name&#8593;</a>
+                    <a class="dropdown-item" href="/jobs/sort/name-desc">Name&#8595;</a>
+                    <a class="dropdown-item" href="/jobs/sort/date-asc">Date&#8593;</a>
+                    <a class="dropdown-item" href="/jobs/sort/date-desc">Date&#8595;</a>
+                    <a class="dropdown-item" href="/jobs/sort/cust-asc">Customer &#8593;</a>
+                    <a class="dropdown-item" href="/jobs/sort/cust-desc">Customer &#8595;</a>
                 </div>
             </div>
 
             <div class="search">
-                <form style="display: flex;" action=""><input type="text" placeholder="Search"><button class="search-btn"><i class="fas fa-search"></i></button></form>
+                <form style="display: flex;" action="/jobs/search" method="POST"><input type="text" placeholder="Search" name='search-term'><button class="search-btn"><i class="fas fa-search"></i></button></form>
             </div>
         </div>
     </div>

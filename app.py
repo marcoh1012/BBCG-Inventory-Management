@@ -402,7 +402,7 @@ def search_slabs():
        
 @app.route('/slabs/sort/<sort_type>')
 def sort_slabs(sort_type):
-    """ Slabbs Sort By """
+    """ Slabs Sort By """
     
     if current_user.is_authenticated:
         if sort_type == 'name-asc':
@@ -421,4 +421,55 @@ def sort_slabs(sort_type):
 
         return render_template('/slabs/slabs.html',slabs=slabs, user=current_user)
 
+@app.route('/jobs/search', methods=['POST'])
+def search_jobs():
+    """ search for slabs with keywords """
 
+    if current_user.is_authenticated:
+        term=request.form.get('search-term')
+        results=[]
+        jobs=Job.query.filter(Job.name.ilike(term)).all()
+        if len(jobs) != 0:
+            results.append(jobs)
+        contractors=Job.query.join(Contractor).filter(Contractor.name.ilike(term)).all()
+        if len(contractors) != 0:
+            results.append(contractors)
+        # if term.isnumeric():
+        #     slabs=Slab.query.filter(Slab.label==term)
+        #     if slabs is not None:
+        #         results.append(slabs)
+        edges=Job.query.join(JobEdge).join(Edge).filter(Edge.name.ilike(term)).all()
+        if len(edges) != 0:
+            results.append(edges)
+
+        full_results=[slab for sublist in results for slab in sublist]
+
+        if len(full_results)==0:
+            flash('No Job Found', 'danger')
+            return redirect('/jobs')
+        
+        return render_template('/jobs/jobs.html', jobs=full_results, user=current_user)
+
+
+@app.route('/jobs/sort/<sort_type>')
+def sort_jobs(sort_type):
+    """ Jobs Sort By """
+    
+    if current_user.is_authenticated:
+        if sort_type == 'name-asc':
+            jobs=Job.query.order_by(Job.name).all()
+        elif sort_type == 'name-desc':
+            jobs=Job.query.order_by(Job.name.desc()).all()
+        elif sort_type == 'date-asc':
+            jobs=Job.query.order_by(Job.installation_date).all()
+        elif sort_type == 'date-desc':
+            jobs=Job.query.order_by(Job.installation_date.desc()).all()
+        elif sort_type == 'cust-asc':
+            jobs=Job.query.join(Contractor).order_by(Contractor.name).all()
+        elif sort_type == 'cust-desc':
+            jobs=Job.query.join(Contractor).order_by(Contractor.name.desc()).all()
+        else:
+            flash("Not a Valid Sort Type", 'danger')
+            return redirect('/home')
+
+        return render_template('/jobs/jobs.html',jobs=jobs, user=current_user)

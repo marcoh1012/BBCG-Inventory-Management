@@ -193,7 +193,7 @@ class Job(db.Model):
     square_feet = db.Column(db.Float, nullable=True)
     installation_date = db.Column(db.DateTime, nullable=True)
     fabrication_date = db.Column(db.DateTime, nullable=True)
-    po_number = db.Column(db.Integer, nullable=True)
+    po_number = db.Column(db.String, nullable=True)
     notes = db.Column(db.Text, nullable=True)
     contractor_id = db.Column(db.Integer, db.ForeignKey('contractors.id'))
 
