@@ -12,8 +12,8 @@ from forms import *
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -292,13 +292,13 @@ def editJob(id):
     return redirect('/')
 
 @app.route('/jobs')
-def viewJobs():
+def view_jobs():
     """ view all jobs """
     jobs=Job.query.all()
     return render_template('/jobs/jobs.html',jobs=jobs, user=current_user)
 
 @app.route('/jobs/<int:id>/delete')
-def deleteJob(id):
+def delete_job(id):
     """ delete job """
 
     job=Job.query.get(id)
@@ -306,4 +306,9 @@ def deleteJob(id):
     db.session.commit()
     return redirect('/jobs')
 
-
+@app.route('/jobs/<int:id>')
+def view_job(id):
+    job=Job.query.get_or_404(id)
+    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count).filter(JobCutout.job_id==job.id).join(Cutout).all()
+    edges = db.session.query(JobEdge.lf, Edge.name).filter(JobEdge.job_id==job.id).join(Edge).all()
+    return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, user=current_user)

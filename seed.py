@@ -1,8 +1,8 @@
 from app import app, db
 from models import *
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 
 connect_db(app)
 
@@ -42,6 +42,7 @@ db.session.add(st2)
 slab1 = Slab(vendor_id='1',
    color_id='1',
    batch_num='1',
+   slab_num='1',
    length='120',
    width='80',
    type_id='2'

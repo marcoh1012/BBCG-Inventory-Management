@@ -1,0 +1,34 @@
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %}
+<!-- office user type -->
+{% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
+<div>
+    <div style="margin-top: 2rem;">
+        <h3>{{job.name.upper()}}</h3>
+    </div>
+    <div class="job-page-info">
+        <p>PO Number: {{job.po_number}}</p>
+        <p>Instalation Date: {{job.installation_date}} </p>
+        <p>Fabrication Date: {{job.fabrcation_date}}</p>
+        <p>Company: {{job.contractor.name}}</p>
+        <hr style="color: black;">
+        <div>
+            <h5>Slabs</h5>
+            {% for slab in job.slabs %}
+            <li>{{slab.vendor.name}} {{slab.color.name}}</li>
+            {% endfor %}
+        </div>
+        <div>
+            <h5> Cutouts</h5>
+            {% for cutout in cutouts %}
+            <li>
+                {{cutout[1]}} - {{cutout[0]}}
+            </li>
+            {% endfor %}</div>
+        <div>
+            <h5>Edges</h5>
+            {% for edge in edges %}
+            <li> {{edge[0]}}lf - {{edge[1]}} </li>
+            {% endfor %}</div>
+    </div>
+</div>{% endblock %}

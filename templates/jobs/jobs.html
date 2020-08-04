@@ -21,10 +21,14 @@
             <tbody>
                 {% for job in jobs %}
                 <tr>
-                    <th scope="row">{{job.name}}</th>
+
+                    <th scope="row">
+                        <a href="/jobs/{{job.id}}">{{job.name}}</a>
+                    </th>
                     <td>{{job.contractor.name}}</td>
                     <td>{{job.po_number}}</td>
                     <td>{{job.installation_date}}</td>
+
                     <td> <a href="/jobs/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
                         <a href="/jobs/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
                     </td>

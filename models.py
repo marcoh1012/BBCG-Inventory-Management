@@ -173,6 +173,7 @@ class Cutout(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
 
+
 class Edge(db.Model):
     """ Model for edges """
     __tablename__ = "edges"
