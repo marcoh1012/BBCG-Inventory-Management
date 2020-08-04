@@ -261,12 +261,13 @@ def newJob():
             db.session.commit()
             jobedge=JobEdge(
                 job_id=job.id,
-                edge_id=form.edge_id.data
+                edge_id=form.edge_id.data,
+                lf=form.lf.data
             )
             db.session.add(jobedge)
             db.session.commit()
             flash('Success: Job Added')
-            return redirect('/')
+            return redirect(f'/jobs/{job.id}')
 
         return render_template('jobs/new_job.html', form=form, user=current_user)
 

@@ -13,22 +13,107 @@
         <p>Company: {{job.contractor.name}}</p>
         <hr style="color: black;">
         <div>
-            <h5>Slabs</h5>
+            <h5 style="width: 100%;">Slabs
+                <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
+            </h5>
             {% for slab in job.slabs %}
             <li>{{slab.vendor.name}} {{slab.color.name}}</li>
             {% endfor %}
         </div>
         <div>
-            <h5> Cutouts</h5>
+            <h5 style="width: 100%;"> Cutouts
+                <p class="add-icon"><button htype="button" data-toggle="modal" data-target="#addcutout"><i class="fas fa-plus"></i></button></h5>
             {% for cutout in cutouts %}
             <li>
                 {{cutout[1]}} - {{cutout[0]}}
             </li>
             {% endfor %}</div>
         <div>
-            <h5>Edges</h5>
+            <h5 style="width: 100%;">Edges
+                <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addedge"><i class="fas fa-plus"></i></button></h5>
             {% for edge in edges %}
-            <li> {{edge[0]}}lf - {{edge[1]}} </li>
+            <li> {{edge[0]}} lf - {{edge[1]}} </li>
             {% endfor %}</div>
     </div>
-</div>{% endblock %}
+</div>
+
+<!-- Cut Out Modal -->
+<div class="modal fade" id="addcutout" tabindex="-1" role="dialog" aria-labelledby="addcutout" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Cutout</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/addcutout" method="POST"></form>
+                <input type="text">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Cut Out Modal -->
+<div class="modal fade" id="addedge" tabindex="-1" role="dialog" aria-labelledby="addedge" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Edge Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/addcutout" method="POST"></form>
+                <input type="text">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Slab Modal -->
+<div class="modal fade" id="addslab" tabindex="-1" role="dialog" aria-labelledby="addslab" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Slab</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="/addcutout" method="POST"></form>
+                <input type="text">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

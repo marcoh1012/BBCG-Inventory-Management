@@ -206,6 +206,27 @@ nav {
     margin: 0.5rem;
 }
 
+.add-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1rem;
+    max-height: 1rem;
+    float: right;
+    border: none !important;
+}
+
+.add-icon button {
+    font-size: 1.2rem;
+    border: 1px rgba(231, 108, 26, 0.836) solid;
+    border-radius: 100rem;
+    color: royalblue;
+}
+
+.add-icon button:hover {
+    background-color: rgba(231, 108, 26, 0.836);
+}
+
 
 /* cellphone */
 
