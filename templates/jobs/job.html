@@ -49,7 +49,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="/jobs/{{job.id}}/addcutout" method="POST" id='form2'>
+                <form action="/job/{{job.id}}/addcutout" method="POST" id='form2'>
                     {{ forms[1].hidden_tag() }} {% for field in forms[1] if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
                     <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
                 </form>
@@ -75,7 +75,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="/jobs/{{job.id}}/addedge" method="POST" id='form3'>
+                <form action="/job/{{job.id}}/addedge" method="POST" id='form3'>
                     {{ forms[2].hidden_tag() }} {% for field in forms[2] if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
                     <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
                 </form>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="/jobs/{{job.id}}/addslab" id='form1' method="POST">
+                <form action="/job/{{job.id}}/addslab" id='form1' method="POST">
                     {{ forms[0].hidden_tag() }} {% for field in forms[0] if field.widget.input_type != 'hidden'%} {% for error in field.errors %}
                     <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
 

@@ -3,59 +3,112 @@
 <!-- office user type -->
 {% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
 <!-- jobs info -->
-<div class="jobs-info">
-    <div>
-        <h3>Jobs</h3>
-        <div style="display: flex;">
-            <div class="dropdown">
-                <button class="btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="d-block">
+    <div class="jobs-info">
+        <div>
+            <h3>Jobs</h3>
+            <div style="display: flex;">
+                <div class="dropdown">
+                    <button class="btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Sort By:
             </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="/jobs/sort/name-asc">Name&#8593;</a>
-                    <a class="dropdown-item" href="/jobs/sort/name-desc">Name&#8595;</a>
-                    <a class="dropdown-item" href="/jobs/sort/date-asc">Date&#8593;</a>
-                    <a class="dropdown-item" href="/jobs/sort/date-desc">Date&#8595;</a>
-                    <a class="dropdown-item" href="/jobs/sort/cust-asc">Customer &#8593;</a>
-                    <a class="dropdown-item" href="/jobs/sort/cust-desc">Customer &#8595;</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/jobs/sort/name-asc/1">Name&#8593;</a>
+                        <a class="dropdown-item" href="/jobs/sort/name-desc/1">Name&#8595;</a>
+                        <a class="dropdown-item" href="/jobs/sort/date-asc/1">Date&#8593;</a>
+                        <a class="dropdown-item" href="/jobs/sort/date-desc/1">Date&#8595;</a>
+                        <a class="dropdown-item" href="/jobs/sort/cust-asc/1">Customer &#8593;</a>
+                        <a class="dropdown-item" href="/jobs/sort/cust-desc/1">Customer &#8595;</a>
+                    </div>
+                </div>
+
+                <div class="search">
+                    <form style="display: flex;" action="/jobs/search/1" method="POST"><input type="text" placeholder="Search" name='search-term'><button class="search-btn"><i class="fas fa-search"></i></button></form>
                 </div>
             </div>
+        </div>
+        <div class="jobs container">
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">PO Number</th>
+                        <th scope="col">Installation Date</th>
+                        <th scope="col">Edit/Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs.items %}
+                    <tr>
 
-            <div class="search">
-                <form style="display: flex;" action="/jobs/search" method="POST"><input type="text" placeholder="Search" name='search-term'><button class="search-btn"><i class="fas fa-search"></i></button></form>
-            </div>
+                        <th scope="row">
+                            <a href="/job/{{job.id}}">{{job.name}}</a>
+                        </th>
+                        <td>{{job.contractor.name}}</td>
+                        <td>{{job.po_number}}</td>
+                        <td>{{job.installation_date}}</td>
+
+                        <td> <a href="/job/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
+                            <a href="/job/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="jobs container">
-        <table class="table table-hover table-dark">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">PO Number</th>
-                    <th scope="col">Installation Date</th>
-                    <th scope="col">Edit/Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for job in jobs %}
-                <tr>
 
-                    <th scope="row">
-                        <a href="/jobs/{{job.id}}">{{job.name}}</a>
-                    </th>
-                    <td>{{job.contractor.name}}</td>
-                    <td>{{job.po_number}}</td>
-                    <td>{{job.installation_date}}</td>
 
-                    <td> <a href="/jobs/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
-                        <a href="/jobs/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
-                    </td>
-                </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
+    <br> {% if sort_by != 'search' %}
+    <div class="pages-links">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if jobs.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('view_jobs', page_num=jobs.page-1) if sort_by == None else  url_for('sort_jobs', sort_type=sort_by, page_num=jobs.page-1) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {% endif %} {% for page in jobs.iter_pages() %} {% if page %}
+                <li class="page-item"><a class="page-link" href="{{url_for('view_jobs', page_num=page) if sort_by == None else  url_for('sort_jobs', sort_type=sort_by, page_num=page) }}">{{page}}</a></li> {% else %}
+                <li class="page-item">...</li> {% endif %} {% endfor %} {% if jobs.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('view_jobs', page_num=jobs.page+1) if sort_by == None else  url_for('sort_jobs', sort_type=sort_by, page_num=jobs.page+1) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
+    {% else %}
 </div>
-{% endblock %}
+<div class="pages-links">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if jobs.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('search_jobs_term', term=search_term, page_num=jobs.page-1)}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            {% endif %} {% for page in jobs.iter_pages() %} {% if page %}
+            <li class="page-item"><a class="page-link" href="{{url_for('search_jobs_term', term=search_term, page_num=page)}}">{{page}}</a></li> {% else %}
+            <li class="page-item">...</li> {% endif %} {% endfor %} {% if jobs.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('search_jobs_term', term=search_term, page_num=jobs.page+1)}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+</div>
+{% endif %} {% endblock %}

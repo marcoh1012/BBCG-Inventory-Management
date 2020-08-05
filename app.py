@@ -233,7 +233,7 @@ def recieve():
 
     return redirect('/')
 
-@app.route('/slabs/<int:id>/delete')
+@app.route('/slab/<int:id>/delete')
 def deleteSlab(id):
     """ delete slab """
 
@@ -279,7 +279,7 @@ def newJob():
 
     return redirect('/')
 
-@app.route('/jobs/<int:id>/edit', methods=['GET','POST'])
+@app.route('/job/<int:id>/edit', methods=['GET','POST'])
 def editJob(id):
     """ edit existing job """
 
@@ -298,13 +298,13 @@ def editJob(id):
     
     return redirect('/')
 
-@app.route('/jobs')
-def view_jobs():
+@app.route('/jobs/<int:page_num>')
+def view_jobs(page_num):
     """ view all jobs """
-    jobs=Job.query.all()
-    return render_template('/jobs/jobs.html',jobs=jobs, user=current_user)
+    jobs=Job.query.paginate(per_page=30, page=page_num)
+    return render_template('/jobs/jobs.html',jobs=jobs, user=current_user,sort_by=None)
 
-@app.route('/jobs/<int:id>/delete')
+@app.route('/job/<int:id>/delete')
 def delete_job(id):
     """ delete job """
 
@@ -315,7 +315,7 @@ def delete_job(id):
 
 
 ########## Job Page routes ##########
-@app.route('/jobs/<int:id>')
+@app.route('/job/<int:id>')
 def view_job(id):
     job=Job.query.get_or_404(id)
     cutouts= db.session.query(Cutout.name, JobCutout.cutout_count).filter(JobCutout.job_id==job.id).join(Cutout).all()
@@ -328,7 +328,7 @@ def view_job(id):
     forms=[slabform,cutoutform,edgeform]
     return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
 
-@app.route('/jobs/<int:id>/addslab', methods=['POST'])
+@app.route('/job/<int:id>/addslab', methods=['POST'])
 def add_slab(id):
     """ Add slab to job """
 
@@ -339,11 +339,11 @@ def add_slab(id):
             db.session.add(SJ)
             db.session.commit()
             flash('Slab Added','success')
-            return redirect(f'/jobs/{id}')
+            return redirect(f'/job/{id}')
     flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/jobs/{id}')
+    return redirect(f'/job/{id}')
 
-@app.route('/jobs/<int:id>/addcutout', methods=['POST'])
+@app.route('/job/<int:id>/addcutout', methods=['POST'])
 def addcutout(id):
     """ Add Cutout to job """
 
@@ -355,11 +355,11 @@ def addcutout(id):
             db.session.add(JC)
             db.session.commit()
             flash('Cutout Added','success')
-            return redirect(f'/jobs/{id}')
+            return redirect(f'/job/{id}')
     flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/jobs/{id}')
+    return redirect(f'/job/{id}')
 
-@app.route('/jobs/<int:id>/addedge', methods=['POST'])
+@app.route('/job/<int:id>/addedge', methods=['POST'])
 def addedge(id):
     """ Add Edge to Job """
 
@@ -371,9 +371,9 @@ def addedge(id):
             db.session.add(JE)
             db.session.commit()
             flash('Cutout Added','success')
-            return redirect(f'/jobs/{id}')
+            return redirect(f'/job/{id}')
     flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/jobs/{id}')
+    return redirect(f'/job/{id}')
 
 
 ######### Sorting Routes########
@@ -405,9 +405,7 @@ def sort_slabs(sort_type,page_num):
     """ Slabs Sort By """
     
     if current_user.is_authenticated:
-        if sort_type=='search':
-            redirect('/slabs/')
-        elif sort_type == 'name-asc':
+        if sort_type == 'name-asc':
             slabs=Slab.query.join(Vendor).order_by(Vendor.name).paginate(per_page=20, page=page_num)
         elif sort_type == 'name-desc':
             slabs=Slab.query.join(Vendor).order_by(Vendor.name.desc()).paginate(per_page=20, page=page_num)
@@ -423,51 +421,41 @@ def sort_slabs(sort_type,page_num):
 
         return render_template('/slabs/slabs.html',slabs=slabs, user=current_user, sort_by= sort_type)
 
-@app.route('/jobs/search', methods=['POST'])
-def search_jobs():
+@app.route('/jobs/search/<int:page_num>', methods=['POST'])
+def search_jobs(page_num):
     """ search for slabs with keywords """
 
     if current_user.is_authenticated:
         term=request.form.get('search-term')
-        results=[]
-        jobs=Job.query.filter(Job.name.ilike(term)).all()
-        if len(jobs) != 0:
-            results.append(jobs)
-        contractors=Job.query.join(Contractor).filter(Contractor.name.ilike(term)).all()
-        if len(contractors) != 0:
-            results.append(contractors)
-        edges=Job.query.join(JobEdge).join(Edge).filter(Edge.name.ilike(term)).all()
-        if len(edges) != 0:
-            results.append(edges)
+        return redirect(f'/jobs/search/{term}/{page_num}')
 
-        full_results=[slab for sublist in results for slab in sublist]
-
-        if len(full_results)==0:
-            flash('No Job Found', 'danger')
-            return redirect('/jobs')
-        
-        return render_template('/jobs/jobs.html', jobs=full_results, user=current_user)
+@app.route('/jobs/search/<term>/<int:page_num>')
+def search_jobs_term(term,page_num):
+    """ search jobs useing term """
+    full_results=Job.query.join(Contractor).join(JobEdge).join(Edge).filter(or_(Job.name.ilike(term),Contractor.name.ilike(term),(Edge.name.ilike(term)))).paginate(per_page=16,page=page_num, error_out=False)
+    
+    return render_template('/jobs/jobs.html', jobs=full_results, user=current_user, sort_by='search', search_term=term)
 
 
-@app.route('/jobs/sort/<sort_type>')
-def sort_jobs(sort_type):
+@app.route('/jobs/sort/<sort_type>/<int:page_num>')
+def sort_jobs(sort_type,page_num):
     """ Jobs Sort By """
     
     if current_user.is_authenticated:
         if sort_type == 'name-asc':
-            jobs=Job.query.order_by(Job.name).all()
+            jobs=Job.query.order_by(Job.name).paginate(per_page=1, page=page_num)
         elif sort_type == 'name-desc':
-            jobs=Job.query.order_by(Job.name.desc()).all()
+            jobs=Job.query.order_by(Job.name.desc()).paginate(per_page=1, page=page_num)
         elif sort_type == 'date-asc':
-            jobs=Job.query.order_by(Job.installation_date).all()
+            jobs=Job.query.order_by(Job.installation_date).paginate(per_page=1, page=page_num)
         elif sort_type == 'date-desc':
-            jobs=Job.query.order_by(Job.installation_date.desc()).all()
+            jobs=Job.query.order_by(Job.installation_date.desc()).paginate(per_page=1, page=page_num)
         elif sort_type == 'cust-asc':
-            jobs=Job.query.join(Contractor).order_by(Contractor.name).all()
+            jobs=Job.query.join(Contractor).order_by(Contractor.name).paginate(per_page=1, page=page_num)
         elif sort_type == 'cust-desc':
-            jobs=Job.query.join(Contractor).order_by(Contractor.name.desc()).all()
+            jobs=Job.query.join(Contractor).order_by(Contractor.name.desc()).paginate(per_page=1, page=page_num)
         else:
             flash("Not a Valid Sort Type", 'danger')
             return redirect('/home')
 
-        return render_template('/jobs/jobs.html',jobs=jobs, user=current_user)
+        return render_template('/jobs/jobs.html',jobs=jobs, user=current_user, sort_by= sort_type)
