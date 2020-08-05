@@ -4,9 +4,10 @@
 {% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block content%}
 <div class="container">
     <h2>Slab info</h2>
-    <form method="POST" id="user_form">
+    <form method="POST" id="user_form" enctype="multipart/form-data">
 
-        {{ form.hidden_tag() }} {{form.picture.label}}: {{form.picture(accept="image/*",class='form-control')}} {% for field in form if field.widget.input_type != 'hidden' and field.label.text != 'Picture' %} {% for error in field.errors %}
+        {{ form.hidden_tag() }} {{form.picture.label}}: {{form.picture(capture="enviroment", accept="image/*",class='form-control')}} {% for field in form if field.widget.input_type != 'hidden' and field.label.text != 'Picture' %} {% for error in field.errors
+        %}
         <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}}: {{ field(class="form-control") }} {% endfor %}
 
         <div class="buttons">

@@ -178,12 +178,17 @@ def editslab(id):
             flash("No Slab Found", 'danger')
             return redirect('/scan')
         if form.validate_on_submit():
-            slab.vendor_id = form.vendor.data
-            slab.color_id = form.color.data
-            slab.batch_num = form.batch_num.data
             slab.length = form.length.data
             slab.width = form.width.data 
             slab.type_id = form.type_id.data
+            if form.picture.data:
+                f = form.picture.data
+                filename = secure_filename(f.filename)
+                f.save(os.path.join(
+                    'static/pics', filename
+                ))
+                slab.picture = f'/static/pics/{filename}'
+            db.session.commit()
             flash('Edited','success')
             return redirect(f'/slab/{id}')
         flash('Slab Found','success')
@@ -482,3 +487,17 @@ def sort_jobs(sort_type,page_num):
             return redirect('/home')
 
         return render_template('/jobs/jobs.html',jobs=jobs, user=current_user, sort_by= sort_type)
+
+##### Other Admin Page Routes ######
+
+@app.route('/admin_page')
+def admin_page():
+    """ Page for admin tools """
+
+    return render_template('/users/admin_page.html', user=current_user)
+
+@app.route('/Reports')
+def reports():
+    """ reports page """
+
+    return render_template('/users/reports.html', user=current_user)
