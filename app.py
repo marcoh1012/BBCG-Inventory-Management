@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
 from werkzeug.utils import secure_filename
+from sqlalchemy import or_
 from models import *
 from forms import *
 
@@ -37,6 +38,11 @@ def homepage():
     """ render homepage """
     return redirect('/login')
 
+@app.route('/slabs')
+def home():
+    """ redirect to first page of slabs """
+    return redirect('/slabs/1')
+
 ######### User Routes ########
 @app.route('/signup', methods=['GET','POST'])
 def signup():
@@ -49,7 +55,7 @@ def signup():
             User.signup(form.username.data,form.password.data,form.type.data)
             db.session.commit()
             flash('User Created','sucess')
-            return redirect('/home')
+            return redirect('/slabs/1')
         return render_template('users/newuser.html', form = form, user=current_user)
     flash('Please Sign In First', 'danger')
     return redirect('/')
@@ -59,7 +65,7 @@ def login():
     """ render login page or log in """
 
     if current_user.is_authenticated:
-        return redirect('/home')
+        return redirect('/slabs/1')
     form = LoginForm()
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,form.password.data)
@@ -69,7 +75,7 @@ def login():
             return redirect('/login')
         login_user(user)
         flash('Logged In','success')
-        return redirect('/home')
+        return redirect('/slabs/1')
         
 
     return render_template('login.html', form=form)
@@ -82,16 +88,16 @@ def logout():
     flash('logged out', 'success')
     return redirect('/')
 
-@app.route('/home')
-def home():
+@app.route('/slabs/<int:page_num>')
+def slabs(page_num):
     user_type=current_user.user_type.type.lower()
     if user_type == 'reciever':
         return redirect('/recieve')
     if user_type == 'fabricator':
         return redirect('/scan')
-    slabs=Slab.query.all()
-    jobs=Job.query.all()
-    return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user)
+    slabs=Slab.query.paginate(per_page=20, page=page_num)
+    # raise
+    return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user, sort_by=None)
     
 ##### Slab Routes #####
 
@@ -371,55 +377,51 @@ def addedge(id):
 
 
 ######### Sorting Routes########
-@app.route('/slabs/search', methods=['POST'])
-def search_slabs():
+@app.route('/slabs/search/<int:page_num>', methods=['GET','POST'])
+def search_slabs(page_num):
     """ search for slabs with keywords """
 
     if current_user.is_authenticated:
         term=request.form.get('search-term')
-        results=[]
-        vendors=Slab.query.join(Vendor).filter(Vendor.name.ilike(term)).all()
-        if len(vendors) != 0:
-            results.append(vendors)
-        colors=Slab.query.join(Color).filter(Color.name.ilike(term)).all()
-        if len(colors) != 0:
-            results.append(colors)
-        if term.isnumeric():
-            slabs=Slab.query.filter(Slab.label==term)
-            if slabs is not None:
-                results.append(slabs)
-        types=Slab.query.join(Slab_Type).filter(Slab_Type.name.ilike(term)).all()
-        if len(types) != 0:
-            results.append(types)
+        return redirect(f'/slabs/search/{term}/{page_num}')
 
-        full_results=[slab for sublist in results for slab in sublist]
-
-        if len(full_results)==0:
-            flash('No Slabs Found', 'danger')
-            return redirect('/')
         
-        return render_template('/slabs/slabs.html', slabs=full_results, user=current_user)
+
+@app.route('/slabs/search/<term>/<int:page_num>')
+def search_slabs_term(term,page_num):
+    """ search for slabs with keywords and pagination """
+
+    if current_user.is_authenticated:  
+        if term.isnumeric():
+             full_results=Slab.query.filter(Slab.label==term).paginate(per_page=20,page=page_num, error_out=False)
+        else:
+            full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
+        
+        return render_template('/slabs/slabs.html', slabs=full_results, user=current_user, sort_by='search', search_term=term)
+
        
-@app.route('/slabs/sort/<sort_type>')
-def sort_slabs(sort_type):
+@app.route('/slabs/sort/<sort_type>/<int:page_num>')
+def sort_slabs(sort_type,page_num):
     """ Slabs Sort By """
     
     if current_user.is_authenticated:
-        if sort_type == 'name-asc':
-            slabs=Slab.query.join(Vendor).order_by(Vendor.name).all()
+        if sort_type=='search':
+            redirect('/slabs/')
+        elif sort_type == 'name-asc':
+            slabs=Slab.query.join(Vendor).order_by(Vendor.name).paginate(per_page=20, page=page_num)
         elif sort_type == 'name-desc':
-            slabs=Slab.query.join(Vendor).order_by(Vendor.name.desc()).all()
+            slabs=Slab.query.join(Vendor).order_by(Vendor.name.desc()).paginate(per_page=20, page=page_num)
         elif sort_type == 'date-asc':
-            slabs=Slab.query.order_by(Slab.created).all()
+            slabs=Slab.query.order_by(Slab.created).paginate(per_page=20, page=page_num)
         elif sort_type == 'date-desc':
-            slabs=Slab.query.order_by(Slab.created.desc()).all()
+            slabs=Slab.query.order_by(Slab.created.desc()).paginate(per_page=20, page=page_num)
         elif sort_type == 'completed':
-            slabs=Slab.query.filter(Slab.completed==True).all()
+            slabs=Slab.query.filter(Slab.completed==True).paginate(per_page=20, page=page_num)
         else:
             flash("Not a Valid Sort Type", 'danger')
             return redirect('/home')
 
-        return render_template('/slabs/slabs.html',slabs=slabs, user=current_user)
+        return render_template('/slabs/slabs.html',slabs=slabs, user=current_user, sort_by= sort_type)
 
 @app.route('/jobs/search', methods=['POST'])
 def search_jobs():
@@ -434,10 +436,6 @@ def search_jobs():
         contractors=Job.query.join(Contractor).filter(Contractor.name.ilike(term)).all()
         if len(contractors) != 0:
             results.append(contractors)
-        # if term.isnumeric():
-        #     slabs=Slab.query.filter(Slab.label==term)
-        #     if slabs is not None:
-        #         results.append(slabs)
         edges=Job.query.join(JobEdge).join(Edge).filter(Edge.name.ilike(term)).all()
         if len(edges) != 0:
             results.append(edges)

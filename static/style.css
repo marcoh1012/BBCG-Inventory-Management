@@ -181,7 +181,7 @@ form button {
     width: 100%;
 }
 
-nav {
+.main-nav {
     background-color: black;
 }
 
@@ -244,6 +244,14 @@ nav {
 
 .search-btn i {
     font-size: 0.8rem !important;
+}
+
+.pages-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
 }
 
 

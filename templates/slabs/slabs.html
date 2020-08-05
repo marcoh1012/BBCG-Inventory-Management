@@ -12,23 +12,23 @@
               Sort By:
             </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="/slabs/sort/name-asc">Name&#8593;</a>
-                    <a class="dropdown-item" href="/slabs/sort/name-desc">Name&#8595;</a>
-                    <a class="dropdown-item" href="/slabs/sort/date-asc">Date&#8593;</a>
-                    <a class="dropdown-item" href="/slabs/sort/date-desc">Date&#8595;</a>
+                    <a class="dropdown-item" href="/slabs/sort/name-asc/1">Name&#8593;</a>
+                    <a class="dropdown-item" href="/slabs/sort/name-desc/1">Name&#8595;</a>
+                    <a class="dropdown-item" href="/slabs/sort/date-asc/1">Date&#8593;</a>
+                    <a class="dropdown-item" href="/slabs/sort/date-desc/1">Date&#8595;</a>
                     <!-- <a class="dropdown-item" href="/slabs/sf-asc">Square Footage &#8593;</a> -->
                     <!-- <a class="dropdown-item" href="/slabs/sf-desc">Square Footage &#8595;</a> -->
-                    <a class="dropdown-item" href="/slabs/sort/completed">Completed</a>
+                    <a class="dropdown-item" href="/slabs/sort/completed/1">Completed</a>
                 </div>
             </div>
 
             <div class="search">
-                <form style="display: flex;" action="/slabs/search" method='POST'><input type="text" name='search-term' placeholder="Search"><button class="search-btn"><i class="fas fa-search"></i></button></form>
+                <form style="display: flex;" action="/slabs/search/1" method='POST'><input type="text" name='search-term' placeholder="Search"><button class="search-btn"><i class="fas fa-search"></i></button></form>
             </div>
         </div>
     </div>
     <div class="slabs">
-        {% for slab in slabs %}
+        {% for slab in slabs.items %}
         <div class="card">
             <img src="{{slab.picture}}" class="card-img-top" alt="slab picture">
             <div class="card-body">
@@ -46,5 +46,54 @@
         </div>
         {% endfor %}
     </div>
+    {% if sort_by != 'search' %}
+    <div class="pages-links">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if slabs.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('slabs', page_num=slabs.page-1)}}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {% endif %} {% for page in slabs.iter_pages() %} {% if page %}
+                <li class="page-item"><a class="page-link" href="{{url_for('slabs', page_num=page) if sort_by == None else  url_for('sort_slabs', sort_type=sort_by, page_num=page) }}">{{page}}</a></li> {% else %}
+                <li class="page-item">...</li> {% endif %} {% endfor %} {% if slabs.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{url_for('slabs', page_num=slabs.page+1)}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% else %}
 </div>
-{% endblock %}
+<div class="pages-links">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if slabs.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('slabs', page_num=slabs.page-1)}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            {% endif %} {% for page in slabs.iter_pages() %} {% if page %}
+            <li class="page-item"><a class="page-link" href="{{url_for('search_slabs_term', term=search_term, page_num=page)}}">{{page}}</a></li> {% else %}
+            <li class="page-item">...</li> {% endif %} {% endfor %} {% if slabs.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('slabs', page_num=slabs.page+1)}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endif %} {% endblock %}
