@@ -184,7 +184,7 @@ def editslab(id):
             slab.length = form.length.data
             slab.width = form.width.data 
             slab.type_id = form.type_id.data
-            flash('Edited','Success')
+            flash('Edited','success')
             return redirect(f'/slab/{id}')
         flash('Slab Found','success')
         return render_template('slabs/edit_slab.html', form=form, slab=slab,user=current_user)
@@ -225,7 +225,6 @@ def recieve():
             slab.label = slab.create_label_id()
             db.session.commit()
 
-            # create_store_label(slab.label)
 
             return redirect(f'/slab/{slab.label}')
                 
@@ -249,9 +248,7 @@ def newJob():
 
     if current_user.is_authenticated:
         form=JobForm()
-        edges=[(str(i.id),i.name) for i in Edge.query.all()]
         contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
-        form.edge_id.choices = edges
         form.contractor_id.choices=contractors
         if form.validate_on_submit():
             job=Job(
@@ -265,14 +262,7 @@ def newJob():
             )
             db.session.add(job)
             db.session.commit()
-            jobedge=JobEdge(
-                job_id=job.id,
-                edge_id=form.edge_id.data,
-                lf=form.lf.data
-            )
-            db.session.add(jobedge)
-            db.session.commit()
-            flash('Success: Job Added')
+            flash('Success: Job Added', 'success')
             return redirect(f'/jobs/{job.id}')
 
         return render_template('jobs/new_job.html', form=form, user=current_user)
@@ -284,15 +274,21 @@ def editJob(id):
     """ edit existing job """
 
     if current_user.is_authenticated:
-        job=Job.query.get(id)
+        job=Job.query.join(JobEdge).join(Edge).filter(Job.id==id).first()
         form=JobForm(obj=job)
-        edges=[(str(i.id),i.name) for i in Edge.query.all()]
         contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
-        form.edge_id.choices = edges
         form.contractor_id.choices=contractors
-        form.lf=JobEdge.query.filter(JobEdge.job_id==job.id).first()
         if form.validate_on_submit():
-            return('success')
+            job.name=form.name.data
+            job.po_number=form.po_number.data
+            job.contractor_id=form.contractor_id.data
+            job.square_feet=form.sf.data
+            job.installation_date=form.installation_date.data
+            job.fabrication_date=form.fabrication_date.data
+            job.notes=form.notes.data
+            db.session.commit()
+            flash('Job Edited', 'success')
+            return redirect(f'/job/{id}')
         return render_template('/jobs/edit_job.html', form = form, user=current_user)
 
     
@@ -311,15 +307,15 @@ def delete_job(id):
     job=Job.query.get(id)
     db.session.delete(job)
     db.session.commit()
-    return redirect('/jobs')
+    return redirect('/jobs/1')
 
 
 ########## Job Page routes ##########
 @app.route('/job/<int:id>')
 def view_job(id):
     job=Job.query.get_or_404(id)
-    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count).filter(JobCutout.job_id==job.id).join(Cutout).all()
-    edges = db.session.query(JobEdge.lf, Edge.name).filter(JobEdge.job_id==job.id).join(Edge).all()
+    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.id).filter(JobCutout.job_id==job.id).join(Cutout).all()
+    edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.id).filter(JobEdge.job_id==job.id).join(Edge).all()
     slabform=ScanBarcodeForm()
     cutoutform=AddCutoutForm()
     cutoutform.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
@@ -373,6 +369,33 @@ def addedge(id):
             flash('Cutout Added','success')
             return redirect(f'/job/{id}')
     flash('Error Occured, Try Again', 'danger')
+    return redirect(f'/job/{id}')
+
+@app.route('/job/<int:id>/slab/<int:label>/delete')
+def remove_JobSlab(id, label):
+    """ remove relationship from slabjob """
+
+    slab=Slab.query.filter(Slab.label==label).first()
+    SJ = SlabJob.query.filter(SlabJob.job_id==id, SlabJob.slab_id==label).first()
+    slab.amount_left=slab.amount_left + SJ.percent_used
+    db.session.delete(SJ)
+    db.session.commit()
+    return redirect(f'/job/{id}')
+
+@app.route('/job/<int:id>/cutout/<int:cutout_id>/delete')
+def remove_JobCutout(id, cutout_id):
+    """ remove relationship from jobcutout """
+    JC=JobCutout.query.filter(JobCutout.job_id==id, JobCutout.cutout_id==cutout_id).first()
+    db.session.delete(JC)
+    db.session.commit()
+    return redirect(f'/job/{id}')
+
+@app.route('/job/<int:id>/edge/<int:edge_id>/delete')
+def remove_JobEdge(id, edge_id):
+    """ remove relationship from jobedge """
+    JE=JobEdge.query.filter(JobEdge.job_id==id, JobEdge.edge_id==edge_id).first()
+    db.session.delete(JE)
+    db.session.commit()
     return redirect(f'/job/{id}')
 
 
@@ -443,17 +466,17 @@ def sort_jobs(sort_type,page_num):
     
     if current_user.is_authenticated:
         if sort_type == 'name-asc':
-            jobs=Job.query.order_by(Job.name).paginate(per_page=1, page=page_num)
+            jobs=Job.query.order_by(Job.name).paginate(per_page=30, page=page_num)
         elif sort_type == 'name-desc':
-            jobs=Job.query.order_by(Job.name.desc()).paginate(per_page=1, page=page_num)
+            jobs=Job.query.order_by(Job.name.desc()).paginate(per_page=30, page=page_num)
         elif sort_type == 'date-asc':
-            jobs=Job.query.order_by(Job.installation_date).paginate(per_page=1, page=page_num)
+            jobs=Job.query.order_by(Job.installation_date).paginate(per_page=30, page=page_num)
         elif sort_type == 'date-desc':
-            jobs=Job.query.order_by(Job.installation_date.desc()).paginate(per_page=1, page=page_num)
+            jobs=Job.query.order_by(Job.installation_date.desc()).paginate(per_page=30, page=page_num)
         elif sort_type == 'cust-asc':
-            jobs=Job.query.join(Contractor).order_by(Contractor.name).paginate(per_page=1, page=page_num)
+            jobs=Job.query.join(Contractor).order_by(Contractor.name).paginate(per_page=30, page=page_num)
         elif sort_type == 'cust-desc':
-            jobs=Job.query.join(Contractor).order_by(Contractor.name.desc()).paginate(per_page=1, page=page_num)
+            jobs=Job.query.join(Contractor).order_by(Contractor.name.desc()).paginate(per_page=30, page=page_num)
         else:
             flash("Not a Valid Sort Type", 'danger')
             return redirect('/home')

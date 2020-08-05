@@ -226,4 +226,4 @@ class SlabJob(db.Model):
 
     slab_id = db.Column(db.Integer, db.ForeignKey('slabs.label'), primary_key=True)
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), primary_key=True)
-    percent_used = db.Column(db.Integer)
+    percent_used = db.Column(db.Integer, default=0)

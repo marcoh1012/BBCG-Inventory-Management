@@ -17,7 +17,10 @@
                 <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
             </h5>
             {% for slab in job.slabs %}
-            <li>{{slab.vendor.name}} {{slab.color.name}}</li>
+            <li>
+                <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}}</a>
+                <a href="/job/{{job.id}}/slab/{{slab.label}}/delete"><i class="fas fa-minus-circle"></i></a>
+            </li>
             {% endfor %}
         </div>
         <div>
@@ -25,14 +28,14 @@
                 <p class="add-icon"><button htype="button" data-toggle="modal" data-target="#addcutout"><i class="fas fa-plus"></i></button></h5>
             {% for cutout in cutouts %}
             <li>
-                {{cutout[1]}} - {{cutout[0]}}
+                {{cutout[1]}} - {{cutout[0]}} <a href="/job/{{job.id}}/cutout/{{cutout[2]}}/delete"><i class="fas fa-minus-circle"></i></a>
             </li>
             {% endfor %}</div>
         <div>
             <h5 style="width: 100%;">Edges
                 <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addedge"><i class="fas fa-plus"></i></button></h5>
             {% for edge in edges %}
-            <li> {{edge[0]}} lf - {{edge[1]}} </li>
+            <li> {{edge[0]}} lf - {{edge[1]}} <a href="/job/{{job.id}}/edge/{{edge[2]}}/delete"><i class="fas fa-minus-circle"></i></a></li>
             {% endfor %}</div>
     </div>
 </div>
