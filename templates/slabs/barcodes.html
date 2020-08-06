@@ -1,0 +1,42 @@
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
+<h5 style="margin-top: 2rem;">Select the barcode you would like to print</h5>
+<form action="/barcodes/print" class="d-flex" style="flex-wrap:wrap;" id='printbarcodes' method="POST">
+    {% for slab in slabs.items %}
+
+    <div class="d-flex" style="margin: 1rem; border: 2px, black solid;">
+        <input type="checkbox" id="{{slab.label}}" name="barcode" value="{{slab.label}}">
+        <label for="{{slab.label}}"><div class="d-flex">
+        <img src="{{slab.label_picture}}" alt=""><div><p>{{slab.vendor.name}}   {{slab.color.name}}</p><p>{{slab.label}}</p></div></div>
+    </label>
+    </div>
+    {% endfor %}
+</form>
+<div class='d-flex justify-content-center'><button type="submit" class="btn btn-primary" form="printbarcodes" value="Submit">Print Barcodes</button></div>
+
+<div class="pages-links">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if slabs.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('barcodes', page_num=slabs.page-1)}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            {% endif %} {% for page in slabs.iter_pages() %} {% if page %}
+            <li class="page-item"><a class="page-link" href="{{url_for('barcodes', page_num=page)}}">{{page}}</a></li> {% else %}
+            <li class="page-item">...</li> {% endif %} {% endfor %} {% if slabs.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{url_for('barcodes', page_num=slabs.page+1)}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

@@ -642,3 +642,24 @@ def deleteaccount(id):
     
     flash("Please Login First")
     return redirect('/')
+
+@app.route('/barcodes/<int:page_num>')
+def barcodes(page_num):
+    """ select barcodes to print """
+    if current_user.is_authenticated:
+        slabs=Slab.query.order_by(Slab.created.desc()).paginate(per_page=15, page=page_num)
+        return render_template('/slabs/barcodes.html', slabs=slabs, user=current_user)
+
+    flash("Please Login First")
+    return redirect('/')
+
+@app.route('/barcodes/print', methods=['POST'])
+def print_barcodes():
+    """ print friendly multiple bacodes """
+    if current_user.is_authenticated:
+        barcodes=request.form.getlist('barcode')
+        slabs=Slab.query.filter(Slab.label.in_(barcodes)).all()
+        return render_template('/slabs/print_barcodes.html', slabs=slabs)
+
+    flash("Please Login First")
+    return redirect('/')
