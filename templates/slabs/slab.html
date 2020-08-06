@@ -14,9 +14,17 @@
         <h6 style="width: 100%;">ID: {{slab.label}}</h6>
         <p>Length: {{slab.length}} Width: {{slab.width}}</p>
         <p>Square Feet: {{slab.calculate_area()}}sf</p>
-        <P>More data to come</P>
+        <P>Jobs</P>
+        <ul>{% for job in slab.jobs %}
+            <li>{{job.name}}</li>
+            {% endfor %}
+        </ul>
     </div>
-    <div class="slab-barcode">
-        <img src="{{slab.label_picture}}" alt="">
+    <div class="slab-barcode d-block">
+        <p>Click on the Barcode to print it</p>
+        <button onclick="printBarcode('{{slab.label_picture}}')"><img src="{{slab.label_picture}}" alt=""></button>
+    </div>
+    <div>
+
     </div>
 </div> {% endblock %}

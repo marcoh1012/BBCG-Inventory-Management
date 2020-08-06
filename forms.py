@@ -36,8 +36,8 @@ class SlabForm(FlaskForm):
     color = SelectField('Slab Color')
     batch_num = IntegerField("Batch Number", validators=[DataRequired()])
     slab_num = IntegerField("Slab Number", validators=[DataRequired()])
-    length = FloatField('Length')
-    width = FloatField('Width')
+    length = FloatField('Length',validators=[Optional()])
+    width = FloatField('Width', validators=[Optional()])
     type_id = SelectField('Slab Type', validators=[DataRequired()])
 
 class JobForm(FlaskForm):
@@ -46,8 +46,8 @@ class JobForm(FlaskForm):
     po_number=StringField('PO Number')
     contractor_id=SelectField('Contractor/Customer', validators=[DataRequired()])
     sf=FloatField('Squared Feet')
-    installation_date=DateField(' Installation Date yyyy-mm-dd', Optional())
-    fabrication_date=DateField('Fabrication Date yyyy-mm-dd', Optional())
+    installation_date=DateField(' Installation Date yyyy-mm-dd', validators=[Optional()])
+    fabrication_date=DateField('Fabrication Date yyyy-mm-dd', validators=[Optional()])
     notes=TextAreaField('Notes')
 
 ##### Adding Info to Jobs Forms ####

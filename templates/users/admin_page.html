@@ -42,7 +42,7 @@
                         <h5>Vendors</h5>
                         <ul>
                             {% for vendor in sections['vendors'] %}
-                            <li>{{vendor.id}} --- {{vendor.name}} <a href="/vendors/{{vendor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                            <li>{{vendor.id}} --- {{vendor.name}} <a href="/admin/vendors/{{vendor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -65,7 +65,7 @@
                             <h5>Slab Colors</h5>
                             <ul>
                                 {% for color in sections['colors'] %}
-                                <li>{{color.id}} --- {{color.name}} <a href="/colors/{{color.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                <li>{{color.id}} --- {{color.name}} <a href="/admin/colors/{{color.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -89,7 +89,7 @@
                             <h5>Slab Types</h5>
                             <ul>
                                 {% for type in sections['slabtypes'] %}
-                                <li>{{type.id}} --- {{type.name}} <a href="/slabtypes/{{type.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                <li>{{type.id}} --- {{type.name}} <a href="/admin/slabtypes/{{type.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -113,7 +113,7 @@
                             <h5>Customer/Contractor</h5>
                             <ul>
                                 {% for contractor in sections['contractors'] %}
-                                <li>{{contractor.id}} --- {{contractor.name}} <a href="/contractors/{{contractor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                <li>{{contractor.id}} --- {{contractor.name}} <a href="/admin/contractors/{{contractor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -137,7 +137,7 @@
                             <h5>Cutouts</h5>
                             <ul>
                                 {% for cutout in sections['cutouts'] %}
-                                <li>{{cutout.id}} --- {{cutout.name}} <a href="/cutouts/{{cutout.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                <li>{{cutout.id}} --- {{cutout.name}} <a href="/admin/cutouts/{{cutout.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -161,7 +161,7 @@
                             <h5>Edge Detail</h5>
                             <ul>
                                 {% for edge in sections['edges'] %}
-                                <li>{{edge.id}} --- {{edge.name}} --- {{edge.type}} <a href="/edges/{{edge.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                <li>{{edge.id}} --- {{edge.name}} --- {{edge.type}} <a href="/admin/edges/{{edge.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>

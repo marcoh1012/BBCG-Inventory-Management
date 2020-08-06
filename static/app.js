@@ -4,3 +4,9 @@ $('.navbar-nav>li>a')
         $('.navbar-collapse')
             .collapse('hide');
     });
+// print barcode
+function printBarcode(url) {
+    let win = window.open('');
+    win.document.write(`<img src="${url}"  onload="window.print();window.close()" >`);
+    win.focus();
+}

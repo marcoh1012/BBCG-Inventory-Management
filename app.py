@@ -13,8 +13,8 @@ from forms import *
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -522,7 +522,7 @@ def reports():
     return render_template('/users/reports.html', user=current_user)
 
 @app.route('/vendors/add', methods=['POST'])
-def create_vendor(option):
+def create_vendor():
     """ create a vendor """
 
     if current_user.is_authenticated:
@@ -597,3 +597,48 @@ def create_edge():
             db.session.add(edge)
             db.session.commit()
             return redirect('/admin_page')
+
+@app.route('/admin/<section>/<int:id>/delete')
+def deleteitem(section,id):
+    """ delete item from admin page and db """
+
+    if current_user.is_authenticated:
+        
+        if section=='vendors':
+            to_be_deleted=Vendor.query.get(id)
+        elif section=='colors':
+            to_be_deleted=Color.query.get(id)
+        elif section=='slabtypes':
+            to_be_deleted=Slab_Type.query.get(id)
+        elif section=='contractors':
+            to_be_deleted=Contractor.query.get(id)
+        elif section=='cutouts':
+            to_be_deleted=Cutout.query.get(id)
+        elif section=='edges':
+            to_be_deleted=Edge.query.get(id)
+        else:
+            flash('That item cannot be deleted', 'danger')
+        db.session.delete(to_be_deleted)
+        db.session.commit()
+        return redirect('/admin_page')
+    
+    flash("Please Login First")
+    return redirect('/')
+
+@app.route('/users/<int:id>/delete')
+def deleteaccount(id):
+    """ Delete account cannot delete admin """
+
+    if current_user.is_authenticated:
+        if id == 1:
+            flash('Sorry You cannot delete the admin account', 'danger')
+            return redirect('/admin_page')
+        else:
+            user = User.query.get(id)
+            db.session.delete(user)
+            db.session.commit()
+            flash('Account Deleted', 'success')
+            return redirect('/admin_page')
+    
+    flash("Please Login First")
+    return redirect('/')
