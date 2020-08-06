@@ -190,11 +190,12 @@ form button {
     background-color: rgba(255, 255, 255, 0.918);
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     border-radius: 5px;
 }
 
 .job-page-info p {
-    border: 1px black solid;
+    border: 2px black solid;
     width: 23%;
     padding: 1rem;
     margin: 0.5rem;
@@ -255,8 +256,25 @@ form button {
     padding-top: 0.5rem;
 }
 
+.notes {
+    width: 100% !important;
+}
+
+.fa-minus-circle {
+    color: red;
+}
+
 
 /* cellphone */
+
+@media only screen and (max-width:1200px) {
+    .job-page-info p {
+        width: 33%;
+    }
+    .job-page-info div {
+        width: 40%;
+    }
+}
 
 @media only screen and (max-width: 992px) {
     .side-nav,
@@ -274,6 +292,12 @@ form button {
     }
     .scan_barcode form {
         min-width: 30rem !important;
+    }
+    .job-page-info p {
+        width: 45%;
+    }
+    .job-page-info div {
+        width: 50%;
     }
 }
 
@@ -308,8 +332,16 @@ form button {
         padding-right: 1rem;
         font-size: 0.75rem;
     }
+    .job-page-info p {
+        width: 100%;
+    }
+    .job-page-info div {
+        width: 100%;
+    }
 }
 
+
+}
 @media only screen and (max-width:400px) {
     .slabs .card {
         max-width: 18rem;

@@ -13,8 +13,8 @@ from forms import *
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -268,7 +268,7 @@ def newJob():
             db.session.add(job)
             db.session.commit()
             flash('Success: Job Added', 'success')
-            return redirect(f'/jobs/{job.id}')
+            return redirect(f'/job/{job.id}')
 
         return render_template('jobs/new_job.html', form=form, user=current_user)
 
@@ -494,10 +494,106 @@ def sort_jobs(sort_type,page_num):
 def admin_page():
     """ Page for admin tools """
 
-    return render_template('/users/admin_page.html', user=current_user)
+    if current_user.is_authenticated:
+        form = adminPageForm()
+        edgeform=EdgeForm()
+        sections={}
+        vendors= Vendor.query.all()
+        sections['vendors']=vendors
+        colors=Color.query.all()
+        sections['colors']=colors
+        slabtypes=Slab_Type.query.all()
+        sections['slabtypes']=slabtypes
+        contractors=Contractor.query.all()
+        sections['contractors']=contractors
+        cutouts=Cutout.query.all()
+        sections['cutouts']=cutouts
+        edges=Edge.query.all()
+        sections['edges']=edges
+        users=User.query.all()
+        sections['users']=users
+
+        return render_template('/users/admin_page.html', form=form, edgeform=edgeform, sections=sections, user=current_user)
 
 @app.route('/Reports')
 def reports():
     """ reports page """
 
     return render_template('/users/reports.html', user=current_user)
+
+@app.route('/vendors/add', methods=['POST'])
+def create_vendor(option):
+    """ create a vendor """
+
+    if current_user.is_authenticated:
+    
+        form=adminPageForm()
+        if form.validate_on_submit():
+            vendor=Vendor(id=form.id.data,name=form.name.data)
+            db.session.add(vendor)
+            db.session.commit()
+            return redirect('/admin_page')
+
+@app.route('/colors/add', methods=['POST'])
+def create_color():
+    """ create a slab color """
+
+    if current_user.is_authenticated:
+    
+        form=adminPageForm()
+        if form.validate_on_submit():
+            color=Color(id=form.id.data,name=form.name.data)
+            db.session.add(color)
+            db.session.commit()
+            return redirect('/admin_page')
+
+@app.route('/slabtypes/add', methods=['POST'])
+def create_slabtype():
+    """ create a slab type """
+
+    if current_user.is_authenticated:
+    
+        form=adminPageForm()
+        if form.validate_on_submit():
+            slabtype=Slab_Type(id=form.id.data,name=form.name.data)
+            db.session.add(slabtype)
+            db.session.commit()
+            return redirect('/admin_page')
+
+@app.route('/contractors/add', methods=['POST'])
+def create_contractor():
+    """ create a contractor """
+
+    if current_user.is_authenticated:
+    
+        form=adminPageForm()
+        if form.validate_on_submit():
+            contractor=Contractor(id=form.id.data,name=form.name.data)
+            db.session.add(contractor)
+            db.session.commit()
+            return redirect('/admin_page')
+
+@app.route('/cutouts/add', methods=['POST'])
+def create_cutout():
+    """ create a cutout """
+
+    if current_user.is_authenticated:
+    
+        form=adminPageForm()
+        if form.validate_on_submit():
+            cutout=Cutout(id=form.id.data,name=form.name.data)
+            db.session.add(cutout)
+            db.session.commit()
+            return redirect('/admin_page')
+
+@app.route('/edges/add', methods=['POST'])
+def create_edge():
+    """ create a edge """
+    if current_user.is_authenticated:
+    
+        form=EdgeForm()
+        if form.validate_on_submit():
+            edge=Edge(id=form.id.data,name=form.name.data, type=form.type.data)
+            db.session.add(edge)
+            db.session.commit()
+            return redirect('/admin_page')

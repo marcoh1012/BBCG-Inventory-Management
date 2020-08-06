@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms import StringField, PasswordField, SelectField, IntegerField, FloatField, BooleanField, TextAreaField, DateField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 class LoginForm(FlaskForm):
     """Login form."""
@@ -46,8 +46,8 @@ class JobForm(FlaskForm):
     po_number=StringField('PO Number')
     contractor_id=SelectField('Contractor/Customer', validators=[DataRequired()])
     sf=FloatField('Squared Feet')
-    installation_date=DateField(' Installation Date yyyy-mm-dd')
-    fabrication_date=DateField('Fabrication Date')
+    installation_date=DateField(' Installation Date yyyy-mm-dd', Optional())
+    fabrication_date=DateField('Fabrication Date yyyy-mm-dd', Optional())
     notes=TextAreaField('Notes')
 
 ##### Adding Info to Jobs Forms ####
@@ -63,3 +63,19 @@ class AddEdgeForm(FlaskForm):
 
     edge = SelectField('Cutout Name', validators=[DataRequired()])
     lf = IntegerField('Number of Cutouts', validators=[DataRequired()])
+
+
+##### Admin Page Forms #####
+
+class adminPageForm(FlaskForm):
+    """ form for thing on admin page """
+
+    id=IntegerField('ID')
+    name=StringField('Name', validators=[DataRequired('Please Enter a Name')])
+
+class EdgeForm(FlaskForm):
+    """ form for a new edge type """
+
+    id=IntegerField('ID')
+    name=StringField('Name', validators=[DataRequired('Please Enter a Name')])
+    type=StringField(' Edge Type')

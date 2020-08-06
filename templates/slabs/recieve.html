@@ -1,12 +1,11 @@
 <!-- admin user type -->
 {% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %}
 <!-- office user type -->
-{% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %}
+{% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %}
 <!-- regular user -->
-{% if user.user_type.type == 'Reciever' or user.user_type.type == 'Fabricator' %} {% extends 'base.html' %} {% endif %} {% block content %}
+{% elif user.user_type.type == 'Reciever' or user.user_type.type == 'Fabricator' %} {% extends 'base.html' %} {% endif %} {% block content %}
 <div class="container">
     <h2>Recieve New Slab</h2>
-    {{user.user_type.type}}
     <form method="POST" id="user_form" enctype="multipart/form-data">
         {{ form.hidden_tag() }} {{form.picture.label}}: {{form.picture(accept="image/*",class='form-control')}} {% for field in form if field.widget.input_type != 'hidden' and field.label.text != 'Picture' %} {% for error in field.errors %}
         <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}

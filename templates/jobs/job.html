@@ -11,11 +11,9 @@
         <p>Instalation Date: {{job.installation_date}} </p>
         <p>Fabrication Date: {{job.fabrication_date}}</p>
         <p>Company: {{job.contractor.name}}</p>
-        <hr style="color: black;">
         <div>
-            <h5 style="width: 100%;">Slabs
-                <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
-            </h5>
+            <h5 style="width: 100%;">Slabs</h5>
+            <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
             {% for slab in job.slabs %}
             <li>
                 <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}}</a>
@@ -24,19 +22,25 @@
             {% endfor %}
         </div>
         <div>
-            <h5 style="width: 100%;"> Cutouts
-                <p class="add-icon"><button htype="button" data-toggle="modal" data-target="#addcutout"><i class="fas fa-plus"></i></button></h5>
+            <h5 style="width: 100%;"> Cutouts</h5>
+            <p class="add-icon"><button htype="button" data-toggle="modal" data-target="#addcutout"><i class="fas fa-plus"></i></button></p>
+
             {% for cutout in cutouts %}
             <li>
                 {{cutout[1]}} - {{cutout[0]}} <a href="/job/{{job.id}}/cutout/{{cutout[2]}}/delete"><i class="fas fa-minus-circle"></i></a>
             </li>
             {% endfor %}</div>
         <div>
-            <h5 style="width: 100%;">Edges
-                <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addedge"><i class="fas fa-plus"></i></button></h5>
+            <h5 style="width: 100%;">Edges</h5>
+            <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addedge"><i class="fas fa-plus"></i></button></p>
             {% for edge in edges %}
             <li> {{edge[0]}} lf - {{edge[1]}} <a href="/job/{{job.id}}/edge/{{edge[2]}}/delete"><i class="fas fa-minus-circle"></i></a></li>
             {% endfor %}</div>
+
+        <div class="notes">
+            <h5>Notes</h5>
+            <p style="border: none;">{{job.notes}}</p>
+        </div>
     </div>
 </div>
 

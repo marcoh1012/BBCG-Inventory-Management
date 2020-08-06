@@ -4,15 +4,197 @@
         <h3>Administration</h3>
     </div>
     <div>
-        Todo List:
-        <ul>
-            <li>Add/Remove Cutout Types</li>
-            <li>Add/Remove Edge Types</li>
-            <li>Add/Remove Slab Types</li>
-            <li>Add/Remove Customer/Contractor</li>
-            <li>Add/Remove Vendor</li>
-            <li>Add/Remove Color</li>
-        </ul>
+        <p>
+            Add/Remove items from database:
+        </p>
+
+        <div>
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#vendors" role="button" aria-expanded="false" aria-controls="vendors">
+                  Vendors
+                </a>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colors" aria-expanded="false" aria-controls="colors">
+                  Colors
+                </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#slabtypes" aria-expanded="false" aria-controls="slabtypes">
+                    Slab Types
+                  </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#contractors" aria-expanded="false" aria-controls="contractors">
+                    Customer/Contractor
+                </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#cutouts" aria-expanded="false" aria-controls="Cutouts">
+                    Cutouts
+                  </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#edges" aria-expanded="false" aria-controls="edges">
+                    Edges
+                  </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#users" aria-expanded="false" aria-controls="users">
+                    User Accounts
+                  </button>
+            </p>
+        </div>
+
+        <!-- each group details -->
+        <div>
+            <div class="collapse show" id="vendors">
+                <div class="card card-body">
+                    <div>
+                        <h5>Vendors</h5>
+                        <ul>
+                            {% for vendor in sections['vendors'] %}
+                            <li>{{vendor.id}} --- {{vendor.name}} <a href="/vendors/{{vendor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                        <h6>Add a New Vendor</h6>
+                        <form action="/vendors/add" method="POST">
+                            {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                            <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                            <button class="btn float-right">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="colors">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Slab Colors</h5>
+                            <ul>
+                                {% for color in sections['colors'] %}
+                                <li>{{color.id}} --- {{color.name}} <a href="/colors/{{color.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <h6>Add a New Color</h6>
+                            <form action="/colors/add" method="POST">
+                                {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                                <button class="btn float-right">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="slabtypes">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Slab Types</h5>
+                            <ul>
+                                {% for type in sections['slabtypes'] %}
+                                <li>{{type.id}} --- {{type.name}} <a href="/slabtypes/{{type.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <h6>Add a New Slab Type</h6>
+                            <form action="/slabtypes/add" method="POST">
+                                {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                                <button class="btn float-right">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="contractors">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Customer/Contractor</h5>
+                            <ul>
+                                {% for contractor in sections['contractors'] %}
+                                <li>{{contractor.id}} --- {{contractor.name}} <a href="/contractors/{{contractor.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <h6>Add a New Customer/Contractor</h6>
+                            <form action="/contractors/add" method="POST">
+                                {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                                <button class="btn float-right">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="cutouts">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Cutouts</h5>
+                            <ul>
+                                {% for cutout in sections['cutouts'] %}
+                                <li>{{cutout.id}} --- {{cutout.name}} <a href="/cutouts/{{cutout.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <h6>Add a New Cutout</h6>
+                            <form action="/cutouts/add" method="POST">
+                                {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                                <button class="btn float-right">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="edges">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Edge Detail</h5>
+                            <ul>
+                                {% for edge in sections['edges'] %}
+                                <li>{{edge.id}} --- {{edge.name}} --- {{edge.type}} <a href="/edges/{{edge.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                        <div>
+                            <h6>Add a New Edge Detail</h6>
+                            <form action="/edges/add" method="POST">
+                                {{ form.hidden_tag() }} {% for field in edgeform if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
+                                <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+                                <button class="btn float-right">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="users">
+                <div class="card card-body">
+                    <div class="card card-body">
+                        <div>
+                            <h5>Users</h5>
+                            <ul>
+                                {% for user in sections['users'] %}
+                                <li>{{user.id}} --- {{user.username}} --- {{user.user_type.type}}<a href="/users/{{user.id}}/delete"><i class="fas fa-minus-circle"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
