@@ -1,6 +1,7 @@
 from sqlalchemy import or_, and_
 from models import *
 from forms import *
+from datetime import datetime, timedelta
 
 """ methods for reports """
 
@@ -11,6 +12,8 @@ def get_report(jobs):
     data['sf']=get_total_square_feet(jobs)
     data['total_cutouts']=get_cutouts_count(jobs)
     data['lf'] = get_edge_totals(jobs)
+    data['contractors']=get_contractor_sf_totals(jobs)
+    data['slat_types']=get_jobs_slab_type_totals(jobs)
     return data
 
 
@@ -52,5 +55,33 @@ def get_edge_totals(jobs):
             else:
                 results[edge.name] = edge.lf
                 results['total'] = results['total'] + edge.lf
+
+    return results
+
+def get_contractor_sf_totals(jobs):
+    """ get the total sf for each ontrctor/customer """
+
+    results = {'total': 0}
+    for job in jobs:
+        if job.contractor.name in results.keys():
+            results[job.contractor.name] = results[job.contractor.name] + job.square_feet
+            results['total'] = results['total'] + job.square_feet
+        else:
+            results[job.contractor.name] = job.square_feet
+            results['total'] = results['total'] + job.square_feet
+    return results
+
+def get_jobs_slab_type_totals(jobs):
+    """ get all jos separated by slab type """
+
+    results = {'total': 0}
+    for job in jobs:
+        for slab in job.slabs:
+            if slab.type.name in results.keys():
+                results[slab.type.name] = results[slab.type.name] + job.square_feet
+                results['total'] = results['total'] + job.square_feet
+            else:
+                results[job.contractor.name] = job.square_feet
+                results['total'] = results['total'] + job.square_feet
 
     return results

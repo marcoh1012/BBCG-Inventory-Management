@@ -12,12 +12,13 @@
         <p>Fabrication Date: {{job.fabrication_date}}</p>
         <p>Company: {{job.contractor.name}}</p>
         <div>
-            <h5 style="width: 100%;">Slabs</h5>
+            <h5 style="width: 100%;">Slabs - {{job.square_feet}}sf</h5>
             <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
             {% for slab in job.slabs %}
             <li>
-                <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}}</a>
-                <a href="/job/{{job.id}}/slab/{{slab.label}}/delete"><i class="fas fa-minus-circle"></i></a>
+                <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}} - {{slab.job_sf}}</a>
+                <a onclick="addSlabSF({{slab.label}},{{job.id}})"><i class="fas fa-plus-circle"></i></a>
+                <a href="/job/{{job.id}}/slab/{{slab.label}}/delete" data-toggle="modal" data-target="#addslabsf"><i class="fas fa-minus-circle"></i></a>
             </li>
             {% endfor %}
         </div>
@@ -117,6 +118,35 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="form1">Add</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Slab SF Modal -->
+<div class="modal fade" id="addslabsf" tabindex="-1" role="dialog" aria-labelledby="addslabsf" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Slab</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+
+            <div class="modal-body">
+                <form action="" id='form4' method="POST">
+                    {{ forms[0].hidden_tag() }} {% for field in forms[3] if field.widget.input_type != 'hidden'%} {% for error in field.errors %}
+                    <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}} : {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary add-sf-btn" form='form4'>Add</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
             </div>

@@ -15,8 +15,8 @@ from reports import *
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -323,12 +323,13 @@ def view_job(id):
     job=Job.query.get_or_404(id)
     cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.id).filter(JobCutout.job_id==job.id).join(Cutout).all()
     edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.id).filter(JobEdge.job_id==job.id).join(Edge).all()
-    slabform=ScanBarcodeForm()
+    slabform=BarcodeAndSFForm()
+    slabsfform = AddSlabSF()
     cutoutform=AddCutoutForm()
     cutoutform.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
     edgeform=AddEdgeForm()
     edgeform.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
-    forms=[slabform,cutoutform,edgeform]
+    forms=[slabform,cutoutform,edgeform,slabsfform]
     return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
 
 @app.route('/job/<int:id>/addslab', methods=['POST'])
@@ -336,9 +337,9 @@ def add_slab(id):
     """ Add slab to job """
 
     if current_user.is_authenticated:    
-        form = ScanBarcodeForm(request.form)
+        form = BarcodeAndSFForm(request.form)
         if form.validate_on_submit():
-            SJ=SlabJob(slab_id=form.label.data,job_id=id)
+            SJ=SlabJob(slab_id=form.label.data,job_id=id, job_sf=form.job_sf.data)
             db.session.add(SJ)
             db.session.commit()
             flash('Slab Added','success')
@@ -404,6 +405,20 @@ def remove_JobEdge(id, edge_id):
     db.session.delete(JE)
     db.session.commit()
     return redirect(f'/job/{id}')
+
+@app.route('/job/<int:id>/<int:slab_id>/addslabsf', methods=['POST'])
+def add_slab_sf(id, slab_id):
+    """ add sf used from this slab """
+
+    if current_user.is_authenticated:
+        form=AddSlabSF(request.form)
+        if form.validate_on_submit():    
+            sj=SlabJob.query.get([slab_id,id])
+            sj.job_sf=form.job_sf.data
+            db.session.commit()
+            flash('Job square footage added/edited', 'success')
+        return redirect(f'/job/{id}')
+    
 
 
 ######### Sorting Routes########
@@ -667,6 +682,6 @@ def reports():
 
     week = datetime.today() - timedelta(days = 8)
 
-    jobs= Job.query.filter(Job.installation_date<datetime.today() ).all()
+    jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today() ).all()
     data=get_report(jobs)
     return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data) 

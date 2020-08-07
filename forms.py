@@ -79,3 +79,13 @@ class EdgeForm(FlaskForm):
     id=IntegerField('ID')
     name=StringField('Name', validators=[DataRequired('Please Enter a Name')])
     type=StringField(' Edge Type')
+class BarcodeAndSFForm(FlaskForm):
+    """ Form to scan in barcode and add sf to job """
+
+    label = IntegerField('Barcode #', validators=[DataRequired()])
+    job_sf=FloatField('Job Square Footage', validators=[DataRequired('Please Enter a number'), NumberRange(min=0)])
+
+class AddSlabSF(FlaskForm):
+    """ square footage used from this slab """
+
+    job_sf=FloatField('Job Square Footage', validators=[DataRequired('Please Enter a number'), NumberRange(min=0)])
