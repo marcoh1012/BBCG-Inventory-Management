@@ -4,17 +4,19 @@ import shutil
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager, current_user, login_user, logout_user
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from models import *
 from forms import *
+from reports import *
 
 # CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -279,7 +281,7 @@ def editJob(id):
     """ edit existing job """
 
     if current_user.is_authenticated:
-        job=Job.query.join(JobEdge).join(Edge).filter(Job.id==id).first()
+        job=Job.query.filter(Job.id==id).first()
         form=JobForm(obj=job)
         contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
         form.contractor_id.choices=contractors
@@ -515,11 +517,6 @@ def admin_page():
 
         return render_template('/users/admin_page.html', form=form, edgeform=edgeform, sections=sections, user=current_user)
 
-@app.route('/Reports')
-def reports():
-    """ reports page """
-
-    return render_template('/users/reports.html', user=current_user)
 
 @app.route('/vendors/add', methods=['POST'])
 def create_vendor():
@@ -663,3 +660,13 @@ def print_barcodes():
 
     flash("Please Login First")
     return redirect('/')
+
+@app.route('/Reports')
+def reports():
+    """ reports page """
+
+    week = datetime.today() - timedelta(days = 8)
+
+    jobs= Job.query.filter(Job.installation_date<datetime.today() ).all()
+    data=get_report(jobs)
+    return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data) 

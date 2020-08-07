@@ -61,8 +61,8 @@ class AddCutoutForm(FlaskForm):
 class AddEdgeForm(FlaskForm):
     """" Add Edge Detail to Job Form """
 
-    edge = SelectField('Cutout Name', validators=[DataRequired()])
-    lf = IntegerField('Number of Cutouts', validators=[DataRequired()])
+    edge = SelectField('Edge Name', validators=[DataRequired()])
+    lf = IntegerField('Linear Feet', validators=[DataRequired()])
 
 
 ##### Admin Page Forms #####

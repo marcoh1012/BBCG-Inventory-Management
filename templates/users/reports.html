@@ -1,1 +1,36 @@
-{% extends '/users/admin.html'%}{% block display %} {% endblock %}
+{% extends '/users/admin.html'%}{% block display %}
+<div>
+    <div style="margin-top: 2rem;">
+        <h2>Analytics</h2>
+        <div>
+            Weekly Reports --------
+            <div class="float-right">
+                <div class="dropdown">
+                    <button class="btn btn-info dropdown-toggle" type="button" id="reportDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Week To Date
+                </button>
+                    <div class="dropdown-menu" id='report-dropdown' aria-labelledby="reportDropDown">
+                        <button class="dropdown-item" type="button">Week To Date</button>
+                        <button class="dropdown-item" type="button">Month To Date</button>
+                        <button class="dropdown-item" type="button">Year To Date</button>
+                        <button class="dropdown-item" type="button">Custom</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <ul>
+            <li> Total Square Footage Installed: {{data['sf']}} </li>
+            <li> Total Liner Footage Installed: {{data['lf']}} </li>
+            <li> Total Cutouts: {{data['total_cutouts']}}</li>
+
+        </ul>
+
+    </div>
+
+
+
+</div>
+{% endblock %}
