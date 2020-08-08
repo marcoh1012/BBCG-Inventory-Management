@@ -321,8 +321,8 @@ def delete_job(id):
 @app.route('/job/<int:id>')
 def view_job(id):
     job=Job.query.get_or_404(id)
-    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.id).filter(JobCutout.job_id==job.id).join(Cutout).all()
-    edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.id).filter(JobEdge.job_id==job.id).join(Edge).all()
+    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.cutout_id).filter(JobCutout.job_id==job.id).join(Cutout).all()
+    edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.edge_id).filter(JobEdge.job_id==job.id).join(Edge).all()
     slabform=BarcodeAndSFForm()
     slabsfform = AddSlabSF()
     cutoutform=AddCutoutForm()

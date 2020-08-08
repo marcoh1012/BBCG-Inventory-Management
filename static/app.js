@@ -11,26 +11,46 @@ function printBarcode(url) {
     win.focus();
 }
 
-let slab_id = 0;
+
 
 
 function addSlabSF(slabID, jobID) {
-    $('#addslabsf').modal('show');
+    $('#addslabsf')
+        .modal('show');
     let $form = $('#form4')[0]
     $form.action = `/job/${jobID}/${slabID}/addslabsf`;
 }
+cutout = 0;
+slab = 0;
+edge_id = 0;
+job_cutout_id = 0;
 
-// $('.add-sf-btn').on('click', (evt) => {
-//     alert('also')
-//     evt.preventDefault();
-//     $('.add-sf-btn').action = `/slab/${slab_id}`
-//     $('.add-sf-btn').submit()
-// })
+let $delete_item;
 
-// function submit_add_sf_form() {
-//     alert('submitted')
-//     console.log($form)
-//     $form.target = '_blank';
-//     $form.action = `/slab/${slab_id}`;
-//     //$form.submit();
-// }
+function deleteCutout(job_id, id) {
+    cutout = id;
+    job_cutout_id = job_id;
+    $('#delete_modal')
+        .modal('show');
+    $delete_item = $('.delete-btn')[0]
+    $delete_item.setAttribute('href', `/job/${job_cutout_id}/cutout/${cutout}/delete`)
+}
+
+function deleteSlab(job_id, slab_id) {
+    slab = slab_id;
+    job_cutout_id = job_id;
+    $('#delete_modal')
+        .modal('show');
+    $delete_item = $('.delete-btn')[0]
+    $delete_item.setAttribute('href', `/job/${job_cutout_id}/slab/${slab}/delete`)
+
+}
+
+function deleteEdge(job_id, edge_id) {
+    edge = edge_id;
+    job_cutout_id = job_id;
+    $('#delete_modal')
+        .modal('show');
+    $delete_item = $('.delete-btn')[0]
+    $delete_item.setAttribute('href', `/job/${job_cutout_id}/edge/${edge}/delete`)
+}
