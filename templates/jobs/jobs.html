@@ -28,36 +28,38 @@
             </div>
         </div>
         <div class="jobs container">
-            <table class="table table-hover table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">PO Number</th>
-                        <th scope="col">Installation Date</th>
-                        <th scope="col">Edit/Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs.items %}
-                    <tr>
+            <div class="table-responsive">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">PO Number</th>
+                            <th scope="col">Installation Date</th>
+                            <th scope="col">Edit/Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs.items %}
+                        <tr>
 
-                        <th scope="row">
-                            <a href="/job/{{job.id}}">{{job.name}}</a>
-                        </th>
-                        <td>{{job.contractor.name}}</td>
-                        <td>{{job.po_number}}</td>
-                        <td>{{job.installation_date}}</td>
+                            <th scope="row">
+                                <a href="/job/{{job.id}}">{{job.name}}</a>
+                            </th>
+                            <td>{{job.contractor.name}}</td>
+                            <td>{{job.po_number}}</td>
+                            <td>{{job.installation_date}}</td>
 
-                        <td> <a href="/job/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
-                            <a href="/job/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
+                            <td> <a href="/job/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
+                                <a href="/job/{{job.id}}/delete"> <i class="fas fa-trash-alt"></i></a>
 
-                        </td>
-                    </tr>
-                    {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

@@ -17,7 +17,7 @@
             {% for slab in job.slabs %}
             <li>
                 <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}} - {{slab.job_sf}}</a>
-                <a onclick="addSlabSF({{slab.label}},{{job.id}})"><i class="fas fa-plus-circle"></i></a>
+                <a onclick="addSlabSF({{slab.label}},{{job.id}})"><i class="fas fa-pencil-alt"></i></a>
                 <a onclick="deleteSlab({{job.id}},{{slab.label}})"><i class="fas fa-minus-circle"></i></a>
             </li>
             {% endfor %}

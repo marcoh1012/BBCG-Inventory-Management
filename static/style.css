@@ -272,6 +272,14 @@ tr {
     border: 2px solid black;
 }
 
+.camera video {
+    max-width: 100% !important;
+}
+
+.camera {
+    max-height: 25rem;
+}
+
 
 /* cellphone */
 

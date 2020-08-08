@@ -7,7 +7,7 @@ $('.navbar-nav>li>a')
 // print barcode
 function printBarcode(url) {
     let win = window.open('');
-    win.document.write(`<img src="${url}"  onload="window.print();window.close()" >`);
+    win.document.write(`<img src="${url}"  onload="window.print()" >`);
     win.focus();
 }
 
@@ -53,4 +53,48 @@ function deleteEdge(job_id, edge_id) {
         .modal('show');
     $delete_item = $('.delete-btn')[0]
     $delete_item.setAttribute('href', `/job/${job_cutout_id}/edge/${edge}/delete`)
+}
+
+function scanCamera() {
+    $('#camera_modal')
+        .modal('show');
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#camera'),
+            constraints: {
+                width: 640,
+                height: 480,
+                facingMode: "environment"
+            }
+        },
+        decoder: {
+            readers: ["code_39_reader"]
+        }
+    }, function(err) {
+        if (err) {
+            console.log(err);
+            return
+        }
+        console.log("Initialization finished. Ready to start");
+        Quagga.start();
+    });
+
+}
+
+
+Quagga.onDetected(ScanCode)
+
+function ScanCode(data) {
+    console.log(data)
+    $('.barcode')
+        .val(data.codeResult.code)
+    $('#camera_modal')
+        .modal('hide')
+    closeCamera()
+}
+
+function closeCamera() {
+    Quagga.stop()
 }
