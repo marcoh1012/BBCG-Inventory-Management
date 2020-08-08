@@ -280,6 +280,14 @@ tr {
     max-height: 25rem;
 }
 
+.fa-camera {
+    font-size: 3rem;
+}
+
+.fa-camera:hover {
+    color: royalblue;
+}
+
 
 /* cellphone */
 

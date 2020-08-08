@@ -80,9 +80,7 @@ function scanCamera() {
         console.log("Initialization finished. Ready to start");
         Quagga.start();
     });
-
 }
-
 
 Quagga.onDetected(ScanCode)
 
@@ -97,4 +95,11 @@ function ScanCode(data) {
 
 function closeCamera() {
     Quagga.stop()
+}
+
+function deleteJob(id) {
+    $('#delete_modal_job')
+        .modal('show');
+    $delete_item = $('.delete-btn')[0]
+    $delete_item.setAttribute('href', `/job/${id}/delete`)
 }
