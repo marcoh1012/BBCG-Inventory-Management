@@ -243,10 +243,11 @@ def recieve():
 def deleteSlab(id):
     """ delete slab """
 
-    slab=Slab.query.filter(Slab.label==id).first()
+    slab=Slab.query.filter(Slab.label == id).first()
     db.session.delete(slab)
     db.session.commit()
-    return redirect('/home')
+    flash("Slab Deleted",'success')
+    return redirect('/slabs/1')
 
 
 @app.route('/job/new', methods=['GET','POST'])

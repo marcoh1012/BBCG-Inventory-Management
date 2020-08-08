@@ -288,6 +288,28 @@ tr {
     color: royalblue;
 }
 
+.img-wrap {
+    position: relative;
+}
+
+.img-wrap .delete_slab {
+    position: absolute;
+    font-size: 2rem;
+    top: 4px;
+    right: 6px;
+    z-index: 100;
+    color: red;
+}
+
+.delete_slab {
+    display: none;
+}
+
+.img-wrap:hover .delete_slab {
+    display: inline-block;
+    color: red;
+}
+
 
 /* cellphone */
 

@@ -30,7 +30,10 @@
     <div class="slabs">
         {% for slab in slabs.items %}
         <div class="card">
-            <img src="{{slab.picture}}" class="card-img-top" alt="slab picture">
+            <div class="img-wrap">
+                <a class="delete_slab" onclick="deleteSlab({{slab.label}})" title="Delete Slab"><i class="fas fa-times delete-slab-btn"></i></a>
+                <img src="{{slab.picture}}" class="card-img-top" alt="slab picture">
+            </div>
             <div class="card-body">
                 <h5 class="card-title">{{slab.vendor.name}} {{slab.color.name}}</h5>
                 <p class="card-text">
@@ -96,4 +99,29 @@
     </nav>
 </div>
 
-{% endif %} {% endblock %}
+
+
+{% endif %}
+
+<div class="modal fade" id="delete_modal_slab" tabindex="-1" role="dialog" aria-labelledby="addslabsf" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete this item?
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary delete-btn" href=''>Delete</a>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>{% endblock %}

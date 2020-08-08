@@ -103,3 +103,11 @@ function deleteJob(id) {
     $delete_item = $('.delete-btn')[0]
     $delete_item.setAttribute('href', `/job/${id}/delete`)
 }
+
+
+function deleteSlab(id) {
+    $('#delete_modal_slab')
+        .modal('show');
+    $delete_item = $('.delete-btn')[0]
+    $delete_item.setAttribute('href', `/slab/${id}/delete`)
+}
