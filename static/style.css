@@ -264,6 +264,14 @@ form button {
     color: red;
 }
 
+.report-tables div {
+    margin: 1rem;
+}
+
+tr {
+    border: 2px solid black;
+}
+
 
 /* cellphone */
 

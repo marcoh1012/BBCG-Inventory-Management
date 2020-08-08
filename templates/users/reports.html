@@ -30,6 +30,89 @@
 
         </ul>
 
+
+        <div class="d-flex report-tables" style="flex-wrap: wrap;">
+            <div style="text-align: center;">
+                <h4>Customers</h4>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Customer </th>
+                            <th scope="col">Square Footage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contractor in data['contractors'] %}
+                        <tr>
+                            <th scope="row">{{contractor.upper()}}</th>
+                            <td>{{data['contractors'][contractor]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align: center;">
+                <h4>Edge Detail</h4>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Edge </th>
+                            <th scope="col">Linear Footage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for edge in data['lf'] %}
+                        <tr>
+                            <th scope="row">{{edge.upper()}}</th>
+                            <td>{{data['lf'][edge]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align: center;">
+                <h4>Cutouts</h4>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Cutout Type</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cutout in data['total_cutouts'] %}
+                        <tr>
+                            <th scope="row">{{cutout.upper()}}</th>
+                            <td>{{data['total_cutouts'][cutout]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align: center;">
+                <h4>Material Type</h4>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Material Type</th>
+                            <th scope="col">Square Footage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for type in data['slab_types'] %}
+                        <tr>
+                            <th scope="row">{{type.upper()}}</th>
+                            <td>{{data['slab_types'][type]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     </div>
 
 
