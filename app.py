@@ -24,6 +24,7 @@ app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd() + '/pictures/slabs/'
 app.config['SECRET_KEY'] = "oh-so-secret"
 debug = DebugToolbarExtension(app)
 
+
 connect_db(app)
 
 login_manager = LoginManager(app)
@@ -684,5 +685,7 @@ def reports():
     week = datetime.today() - timedelta(days = 8)
 
     jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today() ).all()
+    edge_totals=total_lf_job(jobs)
     data=get_report(jobs)
-    return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data) 
+    return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals) 
+

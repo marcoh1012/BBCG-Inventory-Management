@@ -3,8 +3,8 @@
     <div style="margin-top: 2rem;">
         <h2>Analytics</h2>
         <div>
-            Weekly Reports --------
-            <div class="float-right">
+            Report Week to Date
+            <!-- <div class="float-right">
                 <div class="dropdown">
                     <button class="btn btn-info dropdown-toggle" type="button" id="reportDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Week To Date
@@ -17,18 +17,42 @@
 
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <div>
-        <ul>
-            <li> Total Square Footage Installed: {{data['sf']}} </li>
-            <li> Total Liner Footage Installed: {{data['lf']}} </li>
-            <li> Total Cutouts: {{data['total_cutouts']}}</li>
-            <li> Total Square Footage per Contractor: {{data['contractors']}}</li>
-            <li> Total based on slab type: {{data['slab_types']}}</li>
+        <div class="main-table">
+            <div style="text-align: center;">
+                <h4>Jobs</h4>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Job Name</th>
+                            <th scope="col">PO Number</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">SF</th>
+                            <th scope="col">Slabs</th>
+                            <th scope="col">LF</th>
+                            <th scope="col">Cutouts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
 
-        </ul>
+                            <td scope="row">{{job.name}}</td>
+                            <td>{{job.po_number}}</td>
+                            <td>{{job.contractor.name}}</td>
+                            <td>{{job.square_feet}}</td>
+                            <td>{{job.slabs|length}}</td>
+                            <td>{{edgeslf[job.id]}}</td>
+                            <td>{{job.cutouts|length}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
 
         <div class="d-flex report-tables" style="flex-wrap: wrap;">

@@ -2,8 +2,10 @@ from sqlalchemy import or_, and_
 from models import *
 from forms import *
 from datetime import datetime, timedelta
-
 """ methods for reports """
+
+
+
 
 def get_report(jobs):
     """ generate report details """
@@ -90,3 +92,16 @@ def get_jobs_slab_type_totals(jobs):
                 total = total + job.square_feet
     results['total']=total
     return results
+
+def total_lf_job(jobs):
+    """ get total lf for each job """
+    results = {}
+    total=0
+    for job in jobs:
+        edges = JobEdge.query.filter(JobEdge.job_id==job.id).all()
+        for edge in edges:
+            total = total + edge.lf
+        results[job.id]=total
+    
+    return results
+        

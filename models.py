@@ -201,6 +201,7 @@ class Job(db.Model):
     edges = db.relationship('Edge', secondary='jobs_edges', backref=db.backref('jobs'))
     cutouts = db.relationship('Cutout', secondary='jobs_cutouts', backref=db.backref('jobs'))
 
+
 class JobEdge(db.Model):
     """ model for job_edge """
     __tablename__ = 'jobs_edges'
@@ -228,3 +229,5 @@ class SlabJob(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), primary_key=True)
     percent_used = db.Column(db.Integer, default=0)
     job_sf = db.Column(db.Float, default = 0)
+
+
