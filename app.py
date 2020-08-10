@@ -10,6 +10,7 @@ from sqlalchemy import or_, and_
 from models import *
 from forms import *
 from reports import *
+from sqlalchemy import exc
 
 # CURR_USER_KEY = "curr_user"
 
@@ -55,10 +56,16 @@ def signup():
         types = [(str(i.id),i.type) for i in User_Type.query.all()]
         form.type.choices=types
         if form.validate_on_submit():
-            User.signup(form.username.data,form.password.data,form.type.data)
-            db.session.commit()
-            flash('User Created','sucess')
-            return redirect('/slabs/1')
+            try:
+                User.signup(form.username.data,form.password.data,form.type.data)
+                db.session.commit()
+                flash('User Created','sucess')
+                return redirect('/slabs/1')
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('User already','danger')
+                redirect ('/signup')
+
         return render_template('users/newuser.html', form = form, user=current_user)
     flash('Please Sign In First', 'danger')
     return redirect('/')
@@ -110,10 +117,11 @@ def scan():
         form = ScanBarcodeForm()
 
         if form.validate_on_submit():
+
             slab = Slab.query.filter(Slab.label==form.label.data).first()
 
             if slab is None:
-                flash("No Slab Found")
+                flash("No Slab Found", 'danger')
                 return redirect('/scan')
             flash('Slab Found', "success")
             return redirect(f'/cut_slab/{slab.label}')
