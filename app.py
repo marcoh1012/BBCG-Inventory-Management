@@ -16,8 +16,8 @@ from sqlalchemy import exc
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -64,7 +64,7 @@ def signup():
             except exc.IntegrityError:
                 db.session.rollback()
                 flash('User already','danger')
-                redirect ('/signup')
+                return redirect ('/signup')
 
         return render_template('users/newuser.html', form = form, user=current_user)
     flash('Please Sign In First', 'danger')
@@ -106,7 +106,6 @@ def slabs(page_num):
     if user_type == 'fabricator':
         return redirect('/scan')
     slabs=Slab.query.paginate(per_page=20, page=page_num)
-    # raise
     return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user, sort_by=None)
     
 ##### Slab Routes #####
@@ -209,7 +208,7 @@ def editslab(id):
 
 @app.route('/recieve', methods=['GET','POST'])
 def recieve():
-    """ reviece new slabb and add to db """
+    """ reviece new slab and add to db """
 
     if current_user.is_authenticated:
         form = SlabForm()
@@ -220,26 +219,31 @@ def recieve():
         form.color.choices=colors
         form.type_id.choices=types
         if form.validate_on_submit():
-            slab=Slab(
-                vendor_id=form.vendor.data,
-                color_id=form.color.data,
-                batch_num=form.batch_num.data,
-                slab_num=form.slab_num.data,
-                length=form.length.data,
-                width=form.width.data,
-                type_id=form.type_id.data
-            )
-            if form.picture.data:
-                f = form.picture.data
-                filename = secure_filename(f.filename)
-                f.save(os.path.join(
-                    'static/pics', filename
-                ))
-                slab.picture = f'/static/pics/{filename}'
-            db.session.add(slab)
-            db.session.commit()
-            slab.label = slab.create_label_id()
-            db.session.commit()
+            try:
+                slab=Slab(
+                    vendor_id=form.vendor.data,
+                    color_id=form.color.data,
+                    batch_num=form.batch_num.data,
+                    slab_num=form.slab_num.data,
+                    length=form.length.data,
+                    width=form.width.data,
+                    type_id=form.type_id.data
+                )
+                if form.picture.data:
+                    f = form.picture.data
+                    filename = secure_filename(f.filename)
+                    f.save(os.path.join(
+                        'static/pics', filename
+                    ))
+                    slab.picture = f'/static/pics/{filename}'
+                db.session.add(slab)
+                db.session.commit()
+                slab.label = slab.create_label_id()
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Slab Already Exist, Try Again','danger')
+                return redirect ('/recieve')
 
 
             return redirect(f'/slab/{slab.label}')
@@ -268,18 +272,23 @@ def newJob():
         contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
         form.contractor_id.choices=contractors
         if form.validate_on_submit():
-            job=Job(
-                name=form.name.data,
-                po_number=form.po_number.data,
-                contractor_id=form.contractor_id.data,
-                square_feet=form.sf.data,
-                installation_date=form.installation_date.data,
-                fabrication_date=form.fabrication_date.data,
-                notes=form.notes.data
-            )
-            db.session.add(job)
-            db.session.commit()
-            flash('Success: Job Added', 'success')
+            try:
+                job=Job(
+                    name=form.name.data,
+                    po_number=form.po_number.data,
+                    contractor_id=form.contractor_id.data,
+                    square_feet=form.sf.data,
+                    installation_date=form.installation_date.data,
+                    fabrication_date=form.fabrication_date.data,
+                    notes=form.notes.data
+                )
+                db.session.add(job)
+                db.session.commit()
+                flash('Success: Job Added', 'success')
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Job Already Exist','danger')
+                return redirect ('/job/new')
             return redirect(f'/job/{job.id}')
 
         return render_template('jobs/new_job.html', form=form, user=current_user)
@@ -551,9 +560,14 @@ def create_vendor():
     
         form=adminPageForm()
         if form.validate_on_submit():
-            vendor=Vendor(id=form.id.data,name=form.name.data)
-            db.session.add(vendor)
-            db.session.commit()
+            try:
+                vendor=Vendor(id=form.id.data,name=form.name.data)
+                db.session.add(vendor)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Vendor Already Exists','danger')
+                return redirect ('/vendors/add')
             return redirect('/admin_page')
 
 @app.route('/colors/add', methods=['POST'])
@@ -564,9 +578,14 @@ def create_color():
     
         form=adminPageForm()
         if form.validate_on_submit():
-            color=Color(id=form.id.data,name=form.name.data)
-            db.session.add(color)
-            db.session.commit()
+            try:
+                color=Color(id=form.id.data,name=form.name.data)
+                db.session.add(color)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Slab Color Already Exists','danger')
+                return redirect ('/colors/add')
             return redirect('/admin_page')
 
 @app.route('/slabtypes/add', methods=['POST'])
@@ -577,9 +596,14 @@ def create_slabtype():
     
         form=adminPageForm()
         if form.validate_on_submit():
-            slabtype=Slab_Type(id=form.id.data,name=form.name.data)
-            db.session.add(slabtype)
-            db.session.commit()
+            try:
+                slabtype=Slab_Type(id=form.id.data,name=form.name.data)
+                db.session.add(slabtype)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Slab Type Already Exists','danger')
+                return redirect ('/slabtypes/add')
             return redirect('/admin_page')
 
 @app.route('/contractors/add', methods=['POST'])
@@ -590,9 +614,14 @@ def create_contractor():
     
         form=adminPageForm()
         if form.validate_on_submit():
-            contractor=Contractor(id=form.id.data,name=form.name.data)
-            db.session.add(contractor)
-            db.session.commit()
+            try:
+                contractor=Contractor(id=form.id.data,name=form.name.data)
+                db.session.add(contractor)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Contractor Already Exists','danger')
+                return redirect ('/contractors/add')
             return redirect('/admin_page')
 
 @app.route('/cutouts/add', methods=['POST'])
@@ -603,9 +632,14 @@ def create_cutout():
     
         form=adminPageForm()
         if form.validate_on_submit():
-            cutout=Cutout(id=form.id.data,name=form.name.data)
-            db.session.add(cutout)
-            db.session.commit()
+            try:
+                cutout=Cutout(id=form.id.data,name=form.name.data)
+                db.session.add(cutout)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Cutout Already Exists','danger')
+                return redirect ('/cutouts/add')
             return redirect('/admin_page')
 
 @app.route('/edges/add', methods=['POST'])
@@ -615,9 +649,14 @@ def create_edge():
     
         form=EdgeForm()
         if form.validate_on_submit():
-            edge=Edge(id=form.id.data,name=form.name.data, type=form.type.data)
-            db.session.add(edge)
-            db.session.commit()
+            try:
+                edge=Edge(id=form.id.data,name=form.name.data, type=form.type.data)
+                db.session.add(edge)
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                flash('Edge Detal Already Exists','danger')
+                return redirect ('/edges/add')
             return redirect('/admin_page')
 
 @app.route('/admin/<section>/<int:id>/delete')
