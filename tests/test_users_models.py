@@ -1,14 +1,19 @@
+import os, sys
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+
 from unittest import TestCase
 from app import app
 from models import db, User, User_Type
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG_test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG_test'
 
 db.drop_all()
 db.create_all()
 
 class UserModelTestCase(TestCase):
-    """Test views for messages."""
+    
 
     def setUp(self):
         """Create test client, add sample data."""
