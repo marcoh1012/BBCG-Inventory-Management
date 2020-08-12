@@ -16,8 +16,8 @@ from sqlalchemy import exc
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
@@ -125,7 +125,8 @@ def scan():
             flash('Slab Found', "success")
             return redirect(f'/cut_slab/{slab.label}')
         return render_template('slabs/scan.html', form=form, user=current_user)
-    return redirect('/home')
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/cut_slab/<int:id>', methods = ['GET', 'POST'])
 def cut_slab(id):
@@ -136,11 +137,13 @@ def cut_slab(id):
         jobs = [(str(i.id),i.name) for i in Job.query.all()]
         form.job.choices=jobs
 
+        if slab is None:
+            flash("No Slab Found",'danger')
+            return redirect('/scan')
+
         if form.validate_on_submit():
             job = Job.query.get_or_404(form.job.data)
-            if slab is None:
-                flash("No Slab Found")
-                return redirect('/scan')
+            
             if form.picture.data:
                 f = form.picture.data
                 filename = secure_filename(f.filename)
@@ -156,7 +159,8 @@ def cut_slab(id):
             flash('Success', 'success')
             return redirect(f'/scan')
         return render_template('slabs/cut_slab.html', form=form, slab=slab,user=current_user)
-    return redirect('/home')
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/slab/<int:id>')
 def slab(id):
@@ -169,8 +173,8 @@ def slab(id):
             return redirect('/scan')
         flash('Slab Found', 'success')
         return render_template('slabs/slab.html', slab=slab, user=current_user)
-
-    return redirect('/home')
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/slab/<int:id>/edit', methods=['GET', 'POST'])
 def editslab(id):
@@ -250,6 +254,7 @@ def recieve():
                 
         return render_template('/slabs/recieve.html', form = form,user=current_user)
 
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/slab/<int:id>/delete')
@@ -262,7 +267,7 @@ def deleteSlab(id):
     flash("Slab Deleted",'success')
     return redirect('/slabs/1')
 
-
+##### Jobs Routes ####
 @app.route('/job/new', methods=['GET','POST'])
 def newJob():
     """ create new job """
@@ -293,6 +298,7 @@ def newJob():
 
         return render_template('jobs/new_job.html', form=form, user=current_user)
 
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/job/<int:id>/edit', methods=['GET','POST'])
@@ -317,40 +323,53 @@ def editJob(id):
             return redirect(f'/job/{id}')
         return render_template('/jobs/edit_job.html', form = form, user=current_user)
 
-    
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/jobs/<int:page_num>')
 def view_jobs(page_num):
     """ view all jobs """
-    jobs=Job.query.paginate(per_page=30, page=page_num)
-    return render_template('/jobs/jobs.html',jobs=jobs, user=current_user,sort_by=None)
+    if current_user.is_authenticated:
+        jobs=Job.query.paginate(per_page=30, page=page_num)
+        return render_template('/jobs/jobs.html',jobs=jobs, user=current_user,sort_by=None)
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/delete')
 def delete_job(id):
     """ delete job """
 
-    job=Job.query.get(id)
-    db.session.delete(job)
-    db.session.commit()
-    return redirect('/jobs/1')
+    if current_user.is_authenticated:
+        job=Job.query.get(id)
+        db.session.delete(job)
+        db.session.commit()
+        return redirect('/jobs/1')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 
-########## Job Page routes ##########
 @app.route('/job/<int:id>')
 def view_job(id):
-    job=Job.query.get_or_404(id)
-    cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.cutout_id).filter(JobCutout.job_id==job.id).join(Cutout).all()
-    edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.edge_id).filter(JobEdge.job_id==job.id).join(Edge).all()
-    slabform=BarcodeAndSFForm()
-    slabsfform = AddSlabSF()
-    cutoutform=AddCutoutForm()
-    cutoutform.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
-    edgeform=AddEdgeForm()
-    edgeform.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
-    forms=[slabform,cutoutform,edgeform,slabsfform]
-    return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
+    """ view job """
 
+    if current_user.is_authenticated:
+        job=Job.query.get_or_404(id)
+        cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.cutout_id).filter(JobCutout.job_id==job.id).join(Cutout).all()
+        edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.edge_id).filter(JobEdge.job_id==job.id).join(Edge).all()
+        slabform=BarcodeAndSFForm()
+        slabsfform = AddSlabSF()
+        cutoutform=AddCutoutForm()
+        cutoutform.cutout.choices = [(str(i.id),i.name) for i in Cutout.query.all()]
+        edgeform=AddEdgeForm()
+        edgeform.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
+        forms=[slabform,cutoutform,edgeform,slabsfform]
+        return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
+########## Job Page routes ##########
 @app.route('/job/<int:id>/addslab', methods=['POST'])
 def add_slab(id):
     """ Add slab to job """
@@ -363,8 +382,11 @@ def add_slab(id):
             db.session.commit()
             flash('Slab Added','success')
             return redirect(f'/job/{id}')
-    flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/job/{id}')
+        flash('Error Occured, Try Again', 'danger')
+        return redirect(f'/job/{id}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/addcutout', methods=['POST'])
 def addcutout(id):
@@ -379,8 +401,11 @@ def addcutout(id):
             db.session.commit()
             flash('Cutout Added','success')
             return redirect(f'/job/{id}')
-    flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/job/{id}')
+        flash('Error Occured, Try Again', 'danger')
+        return redirect(f'/job/{id}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/addedge', methods=['POST'])
 def addedge(id):
@@ -395,35 +420,51 @@ def addedge(id):
             db.session.commit()
             flash('Cutout Added','success')
             return redirect(f'/job/{id}')
-    flash('Error Occured, Try Again', 'danger')
-    return redirect(f'/job/{id}')
+        flash('Error Occured, Try Again', 'danger')
+        return redirect(f'/job/{id}')
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/slab/<int:label>/delete')
 def remove_JobSlab(id, label):
     """ remove relationship from slabjob """
 
-    slab=Slab.query.filter(Slab.label==label).first()
-    SJ = SlabJob.query.filter(SlabJob.job_id==id, SlabJob.slab_id==label).first()
-    slab.amount_left=slab.amount_left + SJ.percent_used
-    db.session.delete(SJ)
-    db.session.commit()
-    return redirect(f'/job/{id}')
+    if current_user.is_authenticated:   
+        slab=Slab.query.filter(Slab.label==label).first()
+        SJ = SlabJob.query.filter(SlabJob.job_id==id, SlabJob.slab_id==label).first()
+        slab.amount_left=slab.amount_left + SJ.percent_used
+        db.session.delete(SJ)
+        db.session.commit()
+        return redirect(f'/job/{id}')
+    
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/cutout/<int:cutout_id>/delete')
 def remove_JobCutout(id, cutout_id):
     """ remove relationship from jobcutout """
-    JC=JobCutout.query.filter(JobCutout.job_id==id, JobCutout.cutout_id==cutout_id).first()
-    db.session.delete(JC)
-    db.session.commit()
-    return redirect(f'/job/{id}')
+
+    if current_user.is_authenticated:  
+        JC=JobCutout.query.filter(JobCutout.job_id==id, JobCutout.cutout_id==cutout_id).first()
+        db.session.delete(JC)
+        db.session.commit()
+        return redirect(f'/job/{id}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/edge/<int:edge_id>/delete')
 def remove_JobEdge(id, edge_id):
     """ remove relationship from jobedge """
-    JE=JobEdge.query.filter(JobEdge.job_id==id, JobEdge.edge_id==edge_id).first()
-    db.session.delete(JE)
-    db.session.commit()
-    return redirect(f'/job/{id}')
+
+    if current_user.is_authenticated:  
+        JE=JobEdge.query.filter(JobEdge.job_id==id, JobEdge.edge_id==edge_id).first()
+        db.session.delete(JE)
+        db.session.commit()
+        return redirect(f'/job/{id}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/job/<int:id>/<int:slab_id>/addslabsf', methods=['POST'])
 def add_slab_sf(id, slab_id):
@@ -438,6 +479,9 @@ def add_slab_sf(id, slab_id):
             flash('Job square footage added/edited', 'success')
         return redirect(f'/job/{id}')
     
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+    
 
 
 ######### Sorting Routes########
@@ -448,6 +492,9 @@ def search_slabs(page_num):
     if current_user.is_authenticated:
         term=request.form.get('search-term')
         return redirect(f'/slabs/search/{term}/{page_num}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
         
 
@@ -463,6 +510,8 @@ def search_slabs_term(term,page_num):
         
         return render_template('/slabs/slabs.html', slabs=full_results, user=current_user, sort_by='search', search_term=term)
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
        
 @app.route('/slabs/sort/<sort_type>/<int:page_num>')
 def sort_slabs(sort_type,page_num):
@@ -481,9 +530,12 @@ def sort_slabs(sort_type,page_num):
             slabs=Slab.query.filter(Slab.completed==True).paginate(per_page=20, page=page_num)
         else:
             flash("Not a Valid Sort Type", 'danger')
-            return redirect('/home')
+            return redirect('/')
 
         return render_template('/slabs/slabs.html',slabs=slabs, user=current_user, sort_by= sort_type)
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/jobs/search/<int:page_num>', methods=['POST'])
 def search_jobs(page_num):
@@ -493,13 +545,20 @@ def search_jobs(page_num):
         term=request.form.get('search-term')
         return redirect(f'/jobs/search/{term}/{page_num}')
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
 @app.route('/jobs/search/<term>/<int:page_num>')
 def search_jobs_term(term,page_num):
     """ search jobs useing term """
-    full_results=Job.query.join(Contractor).join(JobEdge).join(Edge).filter(or_(Job.name.ilike(term),Contractor.name.ilike(term),(Edge.name.ilike(term)))).paginate(per_page=16,page=page_num, error_out=False)
+        
+    if current_user.is_authenticated:
+        full_results=Job.query.join(Contractor).join(JobEdge).join(Edge).filter(or_(Job.name.ilike(term),Contractor.name.ilike(term),(Edge.name.ilike(term)))).paginate(per_page=16,page=page_num, error_out=False)
     
-    return render_template('/jobs/jobs.html', jobs=full_results, user=current_user, sort_by='search', search_term=term)
+        return render_template('/jobs/jobs.html', jobs=full_results, user=current_user, sort_by='search', search_term=term)
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/jobs/sort/<sort_type>/<int:page_num>')
 def sort_jobs(sort_type,page_num):
@@ -524,6 +583,8 @@ def sort_jobs(sort_type,page_num):
 
         return render_template('/jobs/jobs.html',jobs=jobs, user=current_user, sort_by= sort_type)
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 ##### Other Admin Page Routes ######
 
 @app.route('/admin_page')
@@ -551,6 +612,8 @@ def admin_page():
 
         return render_template('/users/admin_page.html', form=form, edgeform=edgeform, sections=sections, user=current_user)
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/vendors/add', methods=['POST'])
 def create_vendor():
@@ -570,6 +633,11 @@ def create_vendor():
                 return redirect ('/vendors/add')
             return redirect('/admin_page')
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
+    
+
 @app.route('/colors/add', methods=['POST'])
 def create_color():
     """ create a slab color """
@@ -587,6 +655,9 @@ def create_color():
                 flash('Slab Color Already Exists','danger')
                 return redirect ('/colors/add')
             return redirect('/admin_page')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/slabtypes/add', methods=['POST'])
 def create_slabtype():
@@ -606,6 +677,9 @@ def create_slabtype():
                 return redirect ('/slabtypes/add')
             return redirect('/admin_page')
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
 @app.route('/contractors/add', methods=['POST'])
 def create_contractor():
     """ create a contractor """
@@ -623,6 +697,9 @@ def create_contractor():
                 flash('Contractor Already Exists','danger')
                 return redirect ('/contractors/add')
             return redirect('/admin_page')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/cutouts/add', methods=['POST'])
 def create_cutout():
@@ -642,6 +719,9 @@ def create_cutout():
                 return redirect ('/cutouts/add')
             return redirect('/admin_page')
 
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
 @app.route('/edges/add', methods=['POST'])
 def create_edge():
     """ create a edge """
@@ -658,6 +738,9 @@ def create_edge():
                 flash('Edge Detal Already Exists','danger')
                 return redirect ('/edges/add')
             return redirect('/admin_page')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
 
 @app.route('/admin/<section>/<int:id>/delete')
 def deleteitem(section,id):
@@ -683,7 +766,7 @@ def deleteitem(section,id):
         db.session.commit()
         return redirect('/admin_page')
     
-    flash("Please Login First")
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/users/<int:id>/delete')
@@ -701,7 +784,7 @@ def deleteaccount(id):
             flash('Account Deleted', 'success')
             return redirect('/admin_page')
     
-    flash("Please Login First")
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/barcodes/<int:page_num>')
@@ -711,7 +794,7 @@ def barcodes(page_num):
         slabs=Slab.query.order_by(Slab.created.desc()).paginate(per_page=15, page=page_num)
         return render_template('/slabs/barcodes.html', slabs=slabs, user=current_user)
 
-    flash("Please Login First")
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/barcodes/print', methods=['POST'])
@@ -722,17 +805,21 @@ def print_barcodes():
         slabs=Slab.query.filter(Slab.label.in_(barcodes)).all()
         return render_template('/slabs/print_barcodes.html', slabs=slabs)
 
-    flash("Please Login First")
+    flash('Please Sign In First', 'danger')
     return redirect('/')
 
 @app.route('/Reports')
 def reports():
     """ reports page """
 
-    week = datetime.today() - timedelta(days = 8)
+    if current_user.is_authenticated:
+        week = datetime.today() - timedelta(days = 8)
 
-    jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today() ).all()
-    edge_totals=total_lf_job(jobs)
-    data=get_report(jobs)
-    return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals) 
+        jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today() ).all()
+        edge_totals=total_lf_job(jobs)
+        data=get_report(jobs)
+        return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals) 
 
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
