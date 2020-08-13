@@ -17,7 +17,7 @@ office = User_Type(type='Office')
 user_types = [admin, reciever, fabricator, office]
 db.session.add_all(user_types)
 
-user1 = User.signup('admin', 'password', '1')
+user1 = User.signup('admin', 'catdog123', '1')
 db.session.add(user1)
 db.session.commit()
 
