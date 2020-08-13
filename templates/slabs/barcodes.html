@@ -2,7 +2,7 @@
 {% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
 <!-- office user type -->
 {% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block display %}
-<h5 style="margin-top: 2rem;">Select the barcode you would like to print</h5>
+<h5 style="margin-top: 3rem;">Select the barcode(s) you would like to print</h5>
 <form action="/barcodes/print" class="d-flex" style="flex-wrap:wrap;" id='printbarcodes' method="POST">
     {% for slab in slabs.items %}
 

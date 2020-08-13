@@ -7,9 +7,20 @@ body {
     background-size: cover;
 }
 
+.navbar-brand {
+    justify-content: center;
+    color: White;
+    font-size: 2rem;
+    font-family: 'Alfa Slab One', cursive;
+}
+
 .login-logo {
     max-width: 12rem;
     border-radius: 60rem;
+}
+
+h3 {
+    font-family: 'Alfa Slab One', cursive;
 }
 
 .login_form {
@@ -38,11 +49,8 @@ form input {
 }
 
 .topbar p {
-    /* display: flex; */
     align-items: center;
-    /* position: relative; */
     color: white;
-    /* left: 80% */
 }
 
 .navbar-toggler {
@@ -308,6 +316,10 @@ tr {
 .img-wrap:hover .delete_slab {
     display: inline-block;
     color: red;
+}
+
+#admin-cards card {
+    border: darkblue 2px solid !important;
 }
 
 

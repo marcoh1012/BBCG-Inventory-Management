@@ -11,7 +11,7 @@
             {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control barcode") }} {% endfor %}
 
-            <button class="btn">Search</button>
+            <button class="btn">Scan</button>
         </form>
 
         <a onclick="scanCamera()" class="btn camera-btn"> <i class="fas fa-camera"></i></a>
@@ -24,13 +24,14 @@
         <div class="modal-dialog modal-dialog-centered" role="form">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete?</h5>
+                    <h5 class="modal-title">Scan Barcode</h5>
                     <button type="button" class="close" onclick="closeCamera()" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
                 </div>
 
                 <div class="modal-body">
+                    Make sure your camera is connected and you give it permissions to access it.
                     <div class="camera" id="camera"></div>
                 </div>
                 <div class="modal-footer">

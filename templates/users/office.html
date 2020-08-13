@@ -4,7 +4,8 @@
         <div class="list-group" id="list-tab" role="tablist">
             <a class="list-group-item " id="slabs" href="/slabs/1" role="tab">Slabs</a>
             <a class="list-group-item " id="jobs" href="/jobs/1" role="tab">Jobs</a>
-            <a class="list-group-item " id="list-look-up-slab-list" href="/scan">Look Up Slab</a>
+            <a class="list-group-item " id="barcodes" href="/barcodes/1"> Barcodes</a>
+            <a class="list-group-item " id="list-look-up-slab-list" href="/scan">Scan Slab</a>
             <a class="list-group-item " id="list-add-slab-list" href="/recieve">Add Slab</a>
             <a class="list-group-item " href="/job/new">Add Job</a>
         </div>
@@ -16,17 +17,17 @@
 
     </div>
 </div>
-{ %endblock %}
 <!-- burger navs -->
 {% block burgernavs %}
 <div class="collapse navbar-collapse" id="navbar-items">
     <ul class="navbar-nav ml-auto nav-links">
         <li class="nav-item"><a class='nav-link' id="slabs-mobile" href="/slabs/1" role="tab">Slabs</a></li>
         <li class="nav-item"><a class="nav-link " id="jobs-mobile" href="/jobs/1" role="tab">Jobs</a></li>
-        <li class="nav-item"><a class="nav-link " id="list-look-up-slab-list" href="/scan">Look Up Slab</a></li>
+        <li class="nav-item"><a class="nav-link " id="barcodes-mobile" href="/barcodes/1">Barcodes</a></li>
+        <li class="nav-item"><a class="nav-link " id="list-look-up-slab-list" href="/scan">Scan Slab</a></li>
         <li class="nav-item"><a class="nav-link " id="list-add-slab-list" href="/recieve">Add Slab</a></li>
         <li class="nav-item"><a class="nav-link " href="/job/new">Add Job</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
     </ul>
 </div>
-{% endblock %}
+{% endblock %} {% endblock %}

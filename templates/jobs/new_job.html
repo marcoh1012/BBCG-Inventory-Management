@@ -4,13 +4,15 @@
 {% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %}
 <!-- regular user -->
 {% if user.user_type.type == 'Reciever' or user.user_type.type == 'Fabricator' %} {% extends 'base.html' %} {% endif %}{% block content %}
-<div class="container">
+<div class="container mt-5">
     <h2>Add New Job</h2>
     <form method="POST" id="new_job_form" enctype="multipart/form-data">
         {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
         <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
 
-        <button class="btn">Enter</button>
+        <div class="buttons">
+            <button class="btn">Enter</button>
+        </div>
     </form>
 </div>
 {% endblock %}

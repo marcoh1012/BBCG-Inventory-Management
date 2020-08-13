@@ -4,7 +4,7 @@
 {% elif user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %}
 <!-- regular user -->
 {% if user.user_type.type == 'Reciever' or user.user_type.type == 'Fabricator' %} {% extends 'base.html' %} {% endif %}}{% block content %}
-<div class="container">
+<div class="container mt-5">
     <div class="slab-img">
         <img src="{{slab.picture}}" alt="slab picture" style="width: 300px; ">
     </div>
