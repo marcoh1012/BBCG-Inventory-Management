@@ -282,7 +282,7 @@ def newJob():
                     name=form.name.data,
                     po_number=form.po_number.data,
                     contractor_id=form.contractor_id.data,
-                    square_feet=form.sf.data,
+                    square_feet=form.square_feet.data,
                     installation_date=form.installation_date.data,
                     fabrication_date=form.fabrication_date.data,
                     notes=form.notes.data
@@ -314,7 +314,7 @@ def editJob(id):
             job.name=form.name.data
             job.po_number=form.po_number.data
             job.contractor_id=form.contractor_id.data
-            job.square_feet=form.sf.data
+            job.square_feet=form.square_feet.data
             job.installation_date=form.installation_date.data
             job.fabrication_date=form.fabrication_date.data
             job.notes=form.notes.data

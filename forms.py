@@ -45,7 +45,7 @@ class JobForm(FlaskForm):
     name=StringField('Name', validators=[DataRequired()])
     po_number=StringField('PO Number')
     contractor_id=SelectField('Contractor/Customer', validators=[DataRequired()])
-    sf=FloatField('Squared Feet')
+    square_feet =FloatField('Square Feet')
     installation_date=DateField(' Installation Date yyyy-mm-dd', validators=[Optional()])
     fabrication_date=DateField('Fabrication Date yyyy-mm-dd', validators=[Optional()])
     notes=TextAreaField('Notes')
