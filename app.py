@@ -22,7 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd() + '/pictures/slabs/'
-app.config['SECRET_KEY'] = "oh-so-secret"
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY','secret')
 debug = DebugToolbarExtension(app)
 
 
