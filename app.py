@@ -16,8 +16,8 @@ from sqlalchemy import exc
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
