@@ -2,7 +2,7 @@ from app import app, db
 from models import *
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///BBCG'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///BBCG')
 
 connect_db(app)
 
