@@ -375,6 +375,9 @@ tr {
     .slabs .card {
         min-width: 18rem !important;
     }
+    .img-wrap img {
+        min-width: 18rem;
+    }
     .info-btn,
     .edit-btn {
         font-size: 0.75rem;

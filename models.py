@@ -120,7 +120,7 @@ class Slab(db.Model):
     width = db.Column(db.Integer, nullable=True, default=0)
     picture = db.Column(db.Text, nullable=True, default = '/static/pics/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
-    label = db.Column(db.Integer, unique=True, nullable=True)
+    label = db.Column(db.Text, unique=True, nullable=True)
     label_picture = db.Column(db.Text,nullable=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     amount_left = db.Column(db.Integer, default = 100)
