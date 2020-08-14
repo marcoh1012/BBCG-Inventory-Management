@@ -100,13 +100,15 @@ def logout():
 
 @app.route('/slabs/<int:page_num>')
 def slabs(page_num):
-    user_type=current_user.user_type.type.lower()
-    if user_type == 'reciever':
-        return redirect('/recieve')
-    if user_type == 'fabricator':
-        return redirect('/scan')
-    slabs=Slab.query.paginate(per_page=20, page=page_num)
-    return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user, sort_by=None)
+    if current_user.is_authenticated: 
+        user_type=current_user.user_type.type.lower()
+        if user_type == 'reciever':
+            return redirect('/recieve')
+        if user_type == 'fabricator':
+            return redirect('/scan')
+        slabs=Slab.query.paginate(per_page=20, page=page_num)
+        return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user, sort_by=None)
+    return redirect('/')
     
 ##### Slab Routes #####
 
