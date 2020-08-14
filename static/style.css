@@ -364,7 +364,7 @@ tr {
         justify-content: center;
     }
     .slabs .card {
-        max-width: 12.5rem;
+        min-width: 12.5rem;
     }
 }
 
@@ -373,7 +373,7 @@ tr {
         justify-content: center;
     }
     .slabs .card {
-        max-width: 18rem;
+        min-width: 18rem;
     }
     .info-btn,
     .edit-btn {
@@ -402,6 +402,6 @@ tr {
 }
 @media only screen and (max-width:400px) {
     .slabs .card {
-        max-width: 18rem;
+        min-width: 18rem;
     }
 }
