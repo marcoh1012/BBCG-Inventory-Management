@@ -27,23 +27,23 @@ The data is collected from the user on a daily basis and is used to genereate we
 This deployment is just a prototype version for the app. You can check it out using one of the 4 Type of accounts:
 
 ##### Admin:
--admins have full control of the app.
-username: admin
+-admins have full control of the app.<br>
+username: admin<br>
 password: catdog123
 
 ##### Reciever:
--recievers can only recieve(add) slabs and print the labels for them
-username: reciever
+-recievers can only recieve(add) slabs and print the labels for them <br>
+username: reciever <br>
 password: catdog123
 
 ##### Fabricator:
--fabricators can only update the slab that is cut with hoe much and what job it was used on by scanning the barcode
-username: fabricator
+-fabricators can only update the slab that is cut with hoe much and what job it was used on by scanning the barcode <br>
+username: fabricator <br>
 password: catdog123
 
 ##### Office:
--office/secretaries has almost full access except for a few items only available to admins
-username: office
+-office/secretaries has almost full access except for a few items only available to admins <br>
+username: office <br>
 password: catdog123
 
 
