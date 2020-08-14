@@ -1,7 +1,6 @@
 # BBCG-Inventory-Management
-Inventory Management App for BBCG
-Deployment: https://bbcg-inventory-management.herokuapp.com/
-
+Inventory Management App for BBCG <br>
+Deployment: https://bbcg-inventory-management.herokuapp.com/ <br>
 View ReadMe File for login details
 
 ### Barcode Generator API:
@@ -59,6 +58,6 @@ password: catdog123
   <li>Repeat steps 5 and 6 for each slab cut</li>
   <li>View report for the week </li>
 <ol>
-  
+  <br><br>
   
   App Created Using: Python, HTML, Bootstrap, Flask, CSS, Javascript
