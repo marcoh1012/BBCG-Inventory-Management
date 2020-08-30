@@ -98,6 +98,22 @@
 
             <div style="text-align: center;">
                 <h4>Cutouts</h4>
+                <canvas id="cutoutPie" width="300rem" height="200rem"></canvas>
+                <script>
+                    let graphData = JSON.parse('{{ data["total_cutouts"] | tojson}}')
+                    let data = getPieData(graphData)
+                    let options = {
+                        tooltipEvents: [],
+                        showTooltips: true,
+                        onAnimationComplete: function() {
+                            this.showTooltip(this.segments, true);
+                        },
+                        tooltipTemplate: "<%= label %> - <%= value %>"
+                    }
+                    console.log(data)
+                    new Chart(document.getElementById("cutoutPie").getContext("2d")).Pie(data, options)
+                </script>
+
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>

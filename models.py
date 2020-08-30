@@ -155,6 +155,7 @@ class Slab(db.Model):
         if self.amount_left == 0:
             self.completed=True
         return self.amount_left
+        
 
 
 ######## Models for Jobs ########
