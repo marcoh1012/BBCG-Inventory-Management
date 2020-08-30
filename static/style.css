@@ -101,7 +101,7 @@ form input {
     background-color: rgba(231, 108, 26, 0.836);
     min-width: 10rem;
     height: fit-content;
-    margin-top: 6rem;
+    margin-top: 5.6rem;
     margin-right: 0.5rem;
     border-radius: 1rem;
     text-align: left;
@@ -162,10 +162,16 @@ form button {
     color: white;
     text-decoration: none;
     background-color: rgba(0, 0, 0, 0);
+    border: none;
+    border-bottom: 1px solid rgba(51, 49, 49, 0.466);
 }
 
 .list-group a:hover {
     background-color: rgb(2, 22, 83);
+}
+
+#create-account {
+    border-bottom: none;
 }
 
 .fa-trash-alt {
