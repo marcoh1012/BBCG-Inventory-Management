@@ -197,7 +197,7 @@ def editslab(id):
             slab.length = form.length.data
             slab.width = form.width.data 
             slab.type_id = form.type_id.data
-            if form.picture.data:
+            if form.picture.data and not isinstance(form.picture.data,str):
                 f = form.picture.data
                 filename = secure_filename(f.filename)
                 f.save(os.path.join(
