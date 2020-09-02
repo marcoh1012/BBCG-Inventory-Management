@@ -16,8 +16,8 @@ from sqlalchemy import exc
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///BBCG')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///BBCG')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
@@ -357,7 +357,7 @@ def view_job(id):
 
     if current_user.is_authenticated:
         job=Job.query.get_or_404(id)
-        slabs= db.session.query(Slab.label, Vendor.name, Color.name, SlabJob.job_sf).filter(SlabJob.job_id == job.id).filter(Vendor.id == Slab.vendor_id).filter(Color.id == Slab.color_id).join(Vendor).join(Color).all()
+        slabs= db.session.query(Slab, Vendor.name, Color.name, SlabJob.job_sf).join(Vendor).join(Color).join(SlabJob).filter(SlabJob.job_id == job.id)
         cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.cutout_id).filter(JobCutout.job_id==job.id).join(Cutout).all()
         edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.edge_id).filter(JobEdge.job_id==job.id).join(Edge).all()
         slabform=BarcodeAndSFForm()

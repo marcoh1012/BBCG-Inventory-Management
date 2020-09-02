@@ -16,7 +16,7 @@
             <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
             {% for slab in slabs %}
             <li>
-                <a href="/slab/{{slab.label}}">{{slab[1]}} {{slab[2]}} - {{slab.job_sf}}sf</a>
+                <a href="/slab/{{slab.Slab.label}}">{{slab[1]}} {{slab[2]}} - {{slab.job_sf}}sf</a>
                 <a onclick="addSlabSF({{slab.label}},{{job.id}})"><i class="fas fa-pencil-alt"></i></a>
                 <a onclick="deleteSlab({{job.id}},{{slab.label}})"><i class="fas fa-minus-circle"></i></a>
             </li>
