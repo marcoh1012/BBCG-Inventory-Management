@@ -55,7 +55,7 @@
         </div>
 
 
-        <div class="d-flex report-tables" style="flex-wrap: wrap;">
+        <div class="d-flex report-tables" style="flex-wrap: wrap; justify-content: center;">
             <div style="text-align: center;">
                 <h4>Customers</h4>
                 <table class="table">
@@ -96,41 +96,6 @@
                 </table>
             </div>
 
-            <div style="text-align: center;">
-                <h4>Cutouts</h4>
-                <canvas id="cutoutPie" width="300rem" height="200rem"></canvas>
-                <script>
-                    let graphData = JSON.parse('{{ data["total_cutouts"] | tojson}}')
-                    let data = getPieData(graphData)
-                    let options = {
-                        tooltipEvents: [],
-                        showTooltips: true,
-                        onAnimationComplete: function() {
-                            this.showTooltip(this.segments, true);
-                        },
-                        tooltipTemplate: "<%= label %> - <%= value %>"
-                    }
-                    console.log(data)
-                    new Chart(document.getElementById("cutoutPie").getContext("2d")).Pie(data, options)
-                </script>
-
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">Cutout Type</th>
-                            <th scope="col">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cutout in data['total_cutouts'] %}
-                        <tr>
-                            <th scope="row">{{cutout.upper()}}</th>
-                            <td>{{data['total_cutouts'][cutout]}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
 
             <div style="text-align: center;">
                 <h4>Material Type</h4>
@@ -151,6 +116,82 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="d-flex">
+            <div style="text-align: center;">
+                <h4>Cutouts</h4>
+                <canvas id="cutoutPie" width="300rem" height="200rem"></canvas>
+                <script>
+                    let graphData = JSON.parse('{{ data["total_cutouts"] | tojson}}')
+                    let data = getPieData(graphData)
+                    let options = {
+                        tooltipEvents: [],
+                        showTooltips: true,
+                        onAnimationComplete: function() {
+                            this.showTooltip(this.segments, true);
+                        },
+                        tooltipTemplate: "<%= label %> - <%= value %>"
+                    }
+                    new Chart(document.getElementById("cutoutPie").getContext("2d")).Pie(data, options)
+                </script>
+
+                <!-- <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Cutout Type</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cutout in data['total_cutouts'] %}
+                        <tr>
+                            <th scope="row">{{cutout.upper()}}</th>
+                            <td>{{data['total_cutouts'][cutout]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> -->
+                <p>Total : {{data['total_cutouts'].total}}</p>
+            </div>
+
+            <div style="text-align: center;">
+                <h4>Edge Type</h4>
+                <canvas id="edgePie" width="300rem" height="200rem"></canvas>
+                <script>
+                    let edgeTypeData = JSON.parse('{{ data["lf_types"] | tojson}}')
+                    data = getPieData(edgeTypeData)
+                    options = {
+                        tooltipEvents: [],
+                        showTooltips: true,
+                        onAnimationComplete: function() {
+                            this.showTooltip(this.segments, true);
+                        },
+                        tooltipTemplate: "<%= label %> - <%= value %>"
+                    }
+                    new Chart(document.getElementById("edgePie").getContext("2d")).Pie(data, options)
+                </script>
+                <p>Total : {{data['lf_types'].total}}</p>
+            </div>
+
+            <div style="text-align: center;">
+                <h4>Waste</h4>
+                <canvas id="wastePie" width="300rem" height="200rem"></canvas>
+                <script>
+                    let wastedata = JSON.parse('{{ data["waste"] | tojson}}')
+                    data = getPieData(wastedata)
+                    options = {
+                        tooltipEvents: [],
+                        showTooltips: true,
+                        onAnimationComplete: function() {
+                            this.showTooltip(this.segments, true);
+                        },
+                        tooltipTemplate: "<%= label %> - <%= value %>"
+                    }
+                    new Chart(document.getElementById("wastePie").getContext("2d")).Pie(data, options)
+                </script>
+                <p>Waste Percentage: {{data['waste'].percent}} </p>
+            </div>
+
 
         </div>
     </div>

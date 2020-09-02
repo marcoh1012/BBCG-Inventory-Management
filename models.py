@@ -152,6 +152,8 @@ class Slab(db.Model):
     def cut_slab(self,percent):
         """ calculate the amount of slab left """
         self.amount_left= self.amount_left-percent
+        if self.amount_left < 0:
+            self.amount_left = 0
         if self.amount_left == 0:
             self.completed=True
         return self.amount_left

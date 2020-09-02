@@ -14,9 +14,9 @@
         <div>
             <h5 style="width: 100%;">Slabs - {{job.square_feet}}sf</h5>
             <p class="add-icon"><button type="button" data-toggle="modal" data-target="#addslab"><i class="fas fa-plus"></i></button></p>
-            {% for slab in job.slabs %}
+            {% for slab in slabs %}
             <li>
-                <a href="/slab/{{slab.label}}">{{slab.vendor.name}} {{slab.color.name}} - {{slab.job_sf}}</a>
+                <a href="/slab/{{slab.label}}">{{slab[1]}} {{slab[2]}} - {{slab.job_sf}}sf</a>
                 <a onclick="addSlabSF({{slab.label}},{{job.id}})"><i class="fas fa-pencil-alt"></i></a>
                 <a onclick="deleteSlab({{job.id}},{{slab.label}})"><i class="fas fa-minus-circle"></i></a>
             </li>

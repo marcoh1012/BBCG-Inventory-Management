@@ -16,6 +16,8 @@ def get_report(jobs):
     data['lf'] = get_edge_totals(jobs)
     data['contractors']=get_contractor_sf_totals(jobs)
     data['slab_types']=get_jobs_slab_type_totals(jobs)
+    data['lf_types']=get_edge_type_totals(jobs)
+    data['waste']=get_waste(jobs)
     return data
 
 
@@ -105,3 +107,37 @@ def total_lf_job(jobs):
     
     return results
         
+def get_edge_type_totals(jobs):
+    """" get tje total lf for each edge and total overall """
+
+    total=0
+    results = {}
+    for job in jobs:
+        edges = db.session.query(Edge.name, JobEdge.lf, Edge.type).filter(JobEdge.job_id == job.id).join(Edge).all()
+        for edge in edges:
+            if edge.type in results.keys():
+                results[edge.type] = results[edge.type] + edge.lf
+                total = total + edge.lf
+            else:
+                results[edge.type] = edge.lf
+                total = total  + edge.lf
+    results['total']=total
+
+    return results
+
+def get_waste(jobs):
+    """ get the amount of wasted Material """
+    results = {}
+    results['total'] = 0
+    results['Material Used'] = 0
+    for job in jobs:
+        for slab in job.slabs:
+            if (slab.completed):
+                slabjobs = db.session.query(SlabJob).filter(SlabJob.slab_id == slab.label).all()
+                for slabjob in slabjobs:
+                    results['Material Used'] = results['Material Used'] + slabjob.job_sf
+                results['total'] = results['total'] + slab.calculate_area()
+    if results['total'] != '0':
+        results['Waste'] = results['total'] - results['Material Used']
+        results['percent'] = round((results['Waste']/results['total']) * 100,2)
+    return results

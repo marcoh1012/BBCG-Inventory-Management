@@ -7,7 +7,7 @@ function getPieData(data) {
     pieData = []
 
     for (let key in data) {
-        if (key !== 'total') {
+        if (key !== 'total' && key !== 'percent') {
             colorIDX = Math.floor(Math.random() * colors.length)
             pieData.push({
                 value: data[key],

@@ -357,6 +357,7 @@ def view_job(id):
 
     if current_user.is_authenticated:
         job=Job.query.get_or_404(id)
+        slabs= db.session.query(Slab.label, Vendor.name, Color.name, SlabJob.job_sf).filter(SlabJob.job_id == job.id).filter(Vendor.id == Slab.vendor_id).filter(Color.id == Slab.color_id).join(Vendor).join(Color).all()
         cutouts= db.session.query(Cutout.name, JobCutout.cutout_count,JobCutout.cutout_id).filter(JobCutout.job_id==job.id).join(Cutout).all()
         edges = db.session.query(JobEdge.lf, Edge.name, JobEdge.edge_id).filter(JobEdge.job_id==job.id).join(Edge).all()
         slabform=BarcodeAndSFForm()
@@ -366,7 +367,7 @@ def view_job(id):
         edgeform=AddEdgeForm()
         edgeform.edge.choices = [(str(i.id),i.name) for i in Edge.query.all()]
         forms=[slabform,cutoutform,edgeform,slabsfform]
-        return render_template('/jobs/job.html', job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
+        return render_template('/jobs/job.html', slabs=slabs, job=job, cutouts=cutouts, edges=edges, forms=forms, user=current_user)
 
     flash('Please Sign In First', 'danger')
     return redirect('/')
