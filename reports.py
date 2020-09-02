@@ -130,6 +130,7 @@ def get_waste(jobs):
     results = {}
     results['total'] = 0
     results['Material Used'] = 0
+    results['percent'] = 0
     for job in jobs:
         for slab in job.slabs:
             if (slab.completed):
@@ -138,6 +139,6 @@ def get_waste(jobs):
                     results['Material Used'] = results['Material Used'] + slabjob.job_sf
                 results['total'] = results['total'] + slab.calculate_area()
     if results['total'] != 0:
-        results['Waste'] = results['total'] - results['Material Used']
+        results['Waste'] = round(results['total'] - results['Material Used'],2)
         results['percent'] = round((results['Waste']/results['total']) * 100,2)
     return results
