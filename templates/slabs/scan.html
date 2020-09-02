@@ -6,7 +6,7 @@
 {% if user.user_type.type == 'Reciever' or user.user_type.type == 'Fabricator' %} {% extends 'base.html' %} {% endif %}{% block content%}
 <div class="scan_barcode container">
     <div>
-        <div id='barcode-img'><img src="http://barcodes4.me/barcode/c128b/ScanBarcodeLikeThisOne.gif?IsTextDrawn=1" alt=""></div>
+        <div id='barcode-img'><img src="https://barcodes4.me/barcode/c128b/ScanBarcodeLikeThisOne.gif?IsTextDrawn=1" alt=""></div>
         <form method="POST" id="barcode_form">
             {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control barcode") }} {% endfor %}
