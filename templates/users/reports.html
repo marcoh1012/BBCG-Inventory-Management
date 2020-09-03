@@ -27,26 +27,28 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
+                            <th scope="col">Slab Name</th>
                             <th scope="col">Job Name</th>
                             <th scope="col">PO Number</th>
                             <th scope="col">Customer</th>
                             <th scope="col">SF</th>
-                            <th scope="col">Slabs</th>
+                            <th scope="col">Slab %</th>
                             <th scope="col">LF</th>
                             <th scope="col">Cutouts</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for job in jobs %}
+                        {% for item in slabjobs %}
                         <tr>
 
-                            <td scope="row">{{job.name}}</td>
-                            <td>{{job.po_number}}</td>
-                            <td>{{job.contractor.name}}</td>
-                            <td>{{job.square_feet}}</td>
-                            <td>{{job.slabs|length}}</td>
-                            <td>{{edgeslf[job.id]}}</td>
-                            <td>{{job.cutouts|length}}</td>
+                            <td scope="row">{{item.Slab.vendor.name}} {{item.Slab.color.name}}</td>
+                            <td>{{item.Job.name}} </td>
+                            <td>{{item.Job.po_number}}</td>
+                            <td>{{item.Job.contractor.name}}</td>
+                            <td>{{item.Job.square_feet}}</td>
+                            <td>{{item.percent_used}}</td>
+                            <td>{{edgeslf[item.Job.id]}}</td>
+                            <td>{{item.Job.cutouts|length}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

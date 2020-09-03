@@ -818,10 +818,12 @@ def reports():
     if current_user.is_authenticated:
         week = datetime.today() - timedelta(days = 8)
 
-        jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today() ).all()
+        jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today()).all()
+        slabjobs = db.session.query(Slab,Job,SlabJob.percent_used).join(Slab).join(Vendor).join(Color).order_by(Vendor.name, Color.name).filter(Job.installation_date>=week, Job.installation_date<=datetime.today())
+        print(jobs)
         edge_totals=total_lf_job(jobs)
         data=get_report(jobs)
-        return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals) 
+        return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals, slabjobs = slabjobs) 
 
 
     flash('Please Sign In First', 'danger')
