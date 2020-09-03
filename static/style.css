@@ -341,6 +341,10 @@ tr {
     border: darkblue 2px solid !important;
 }
 
+.graphs {
+    flex-wrap: wrap;
+}
+
 
 /* cellphone */
 
