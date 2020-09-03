@@ -36,7 +36,7 @@ function deleteCutout(job_id, id) {
     $delete_item.setAttribute('href', `/job/${job_cutout_id}/cutout/${cutout}/delete`)
 }
 
-function deleteSlab(job_id, slab_id) {
+function deleteSlabJob(job_id, slab_id) {
     slab = slab_id;
     job_cutout_id = job_id;
     $('#delete_modal')

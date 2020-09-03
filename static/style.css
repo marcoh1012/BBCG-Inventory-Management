@@ -240,6 +240,7 @@ form button {
     max-height: 1rem;
     float: right;
     border: none !important;
+    position: relative;
 }
 
 .add-icon button {
@@ -247,6 +248,8 @@ form button {
     border: 1px rgba(231, 108, 26, 0.836) solid;
     border-radius: 100rem;
     color: royalblue;
+    position: absolute;
+    bottom: .5rem;
 }
 
 .add-icon button:hover {
