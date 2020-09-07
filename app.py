@@ -328,6 +328,7 @@ def editJob(id):
         form=JobForm(obj=job)
         contractors=[(str(i.id),i.name) for i in Contractor.query.all()]
         form.contractor_id.choices=contractors
+        form.contractor_id.data = str(job.contractor_id)
         if form.validate_on_submit():
             job.name=form.name.data
             job.po_number=form.po_number.data
