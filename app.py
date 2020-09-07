@@ -188,12 +188,20 @@ def editslab(id):
         types = [(str(i.id),i.name) for i in Slab_Type.query.all()]
         form=SlabForm(obj=slab)
         form.vendor.choices=vendors
+        form.vendor.data = str(slab.vendor_id)
         form.color.choices=colors
-        form.type_id.choices=types
+        form.color.data = str(slab.color_id)
+        form.type_id.choices = types
+        form.type_id.data = str(slab.type_id)
+    
         if slab is None:
             flash("No Slab Found", 'danger')
             return redirect('/scan')
         if form.validate_on_submit():
+            slab.vendor_id = form.vendor.data
+            slab.color_id = form.color.data
+            slab.batch_num = form.batch_num.data
+            slab.slab_num = form.slab_num.data
             slab.length = form.length.data
             slab.width = form.width.data 
             slab.type_id = form.type_id.data
@@ -204,6 +212,8 @@ def editslab(id):
                     'static/pics', filename
                 ))
                 slab.picture = f'/static/pics/{filename}'
+            db.session.commit()
+            slab.label = slab.create_label_id()
             db.session.commit()
             flash('Edited','success')
             return redirect(f'/slab/{id}')
