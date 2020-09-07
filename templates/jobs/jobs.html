@@ -48,7 +48,7 @@
                             </th>
                             <td>{{job.contractor.name}}</td>
                             <td>{{job.po_number}}</td>
-                            <td>{{job.installation_date}}</td>
+                            <td>{% if job.installation_date != None %}{{job.installation_date.strftime('%a, %b %d, %Y ')}} {% else %} {{job.installation_date}} {% endif %}</td>
 
                             <td> <a href="/job/{{job.id}}/edit"><i class="fas fa-edit"></i></a>
                                 <a onclick="deleteJob({{job.id}})"> <i class="fas fa-trash-alt"></i></a>

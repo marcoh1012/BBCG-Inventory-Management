@@ -12,6 +12,8 @@
     <div class="slab-page-info">
         <h5 style="width: 100%;">Batch Number: {{slab.batch_num}} Slab #: {{slab.slab_num}}</h5>
         <h6 style="width: 100%;">ID: {{slab.label}}</h6>
+        <p> Recieved Date: {{slab.created.strftime('%a, %b %d, %Y ')}}</p>
+        <p>Time: {{slab.created.astimezone(timezn).strftime('%I:%M %p')}}</p>
         <p>Length: {{slab.length}} Width: {{slab.width}}</p>
         <p>Square Feet: {{slab.calculate_area()}}sf</p>
         <P style="text-decoration: underline;">Jobs</P>

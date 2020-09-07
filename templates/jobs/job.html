@@ -7,10 +7,10 @@
         <h3>{{job.name.upper()}}</h3>
     </div>
     <div class="job-page-info">
-        <p>PO Number: {{job.po_number}}</p>
-        <p>Instalation Date: {{job.installation_date}} </p>
-        <p>Fabrication Date: {{job.fabrication_date}}</p>
-        <p>Company: {{job.contractor.name}}</p>
+        <p>PO Number: <br> {{job.po_number}}</p>
+        <p>Instalation Date: <br> {% if job.installation_date != None %}{{job.installation_date.strftime('%a, %b %d, %Y ')}} {% else %} {{job.installation_date}} {% endif %}</p>
+        <p>Fabrication Date: <br>{% if job.fabrication_date != None %}{{job.fabrication_date.strftime('%a, %b %d, %Y ')}} {% else %} {{job.fabrication_date}} {% endif %}</p>
+        <p>Company:<br> {{job.contractor.name}}</p>
         <div>
             <section class="d-flex">
                 <h5 style="width: 100%;">Slabs - {{job.square_feet}}sf</h5>

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 import os
 
@@ -122,7 +122,7 @@ class Slab(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
     label = db.Column(db.Text, unique=True, nullable=True)
     label_picture = db.Column(db.Text,nullable=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    created = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     amount_left = db.Column(db.Integer, default = 100)
     completed = db.Column(db.Boolean, default=False)
 

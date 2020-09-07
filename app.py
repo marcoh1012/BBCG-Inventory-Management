@@ -11,6 +11,8 @@ from models import *
 from forms import *
 from reports import *
 from sqlalchemy import exc
+import pytz
+from tzlocal import get_localzone
 
 # CURR_USER_KEY = "curr_user"
 
@@ -167,14 +169,18 @@ def cut_slab(id):
 @app.route('/slab/<int:id>')
 def slab(id):
     """ slab info """
-    if current_user.is_authenticated:  
+
+    if current_user.is_authenticated:
+        timezn = get_localzone()  
         slab = Slab.query.filter(Slab.label==id).first()
 
         if slab is None:
             flash("No Slab Found", 'danger')
             return redirect('/scan')
+
+        slab.created = slab.created.replace(tzinfo=pytz.utc)
         flash('Slab Found', 'success')
-        return render_template('slabs/slab.html', slab=slab, user=current_user)
+        return render_template('slabs/slab.html', slab=slab, user=current_user, datetime=datetime, timezn=timezn)
     flash('Please Sign In First', 'danger')
     return redirect('/')
 
