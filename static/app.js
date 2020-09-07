@@ -4,7 +4,15 @@ $('.navbar-nav>li>a')
         $('.navbar-collapse')
             .collapse('hide');
     });
-// print barcode
+
+
+$('.custom-report-btn')
+    .on('click', function(evt) {
+        evt.preventDefault()
+        $('.customreport')
+            .show()
+    })
+    // print barcode
 function printBarcode(url) {
     let win = window.open('');
     win.document.write(`<img src="${url}"  onload="window.print()" >`);

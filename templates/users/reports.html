@@ -3,21 +3,36 @@
     <div style="margin-top: 2rem;">
         <h2>Analytics</h2>
         <div>
-            Report Week to Date
-            <!-- <div class="float-right">
+            {{report_title}}
+            <div class="float-right">
                 <div class="dropdown">
                     <button class="btn btn-info dropdown-toggle" type="button" id="reportDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Week To Date
                 </button>
                     <div class="dropdown-menu" id='report-dropdown' aria-labelledby="reportDropDown">
-                        <button class="dropdown-item" type="button">Week To Date</button>
-                        <button class="dropdown-item" type="button">Month To Date</button>
-                        <button class="dropdown-item" type="button">Year To Date</button>
-                        <button class="dropdown-item" type="button">Custom</button>
+                        <form action="" method="post">
+                            <button class="dropdown-item" name='report' type="submit" value="week_to_date">Week To Date</button>
+                        </form>
+                        <form action="" method="post">
+                            <button class="dropdown-item" name='report' type="submit" value='month_to_date'>Month To Date</button></form>
+                        <form action="" method="post">
+                            <button class="dropdown-item" name='report' type="submit" value='year_to_date'>Year To Date</button></form>
+                        <form action="" method="post">
+                            <button class="dropdown-item" name='report' type="submit" value='Last_week'>Last Week</button></form>
+                        <form action="" method="post" class="custom_form_report">
+                            <button class="dropdown-item custom-report-btn">Custom</button>
+                            <div class="customreport" style="display: none;">
+                                <label for="start">Start date:</label>
+                                <input type="date" id="start" name="report_start">
+                                <label for="start">End date:</label>
+                                <input type="date" id="end" name="report_end">
+                                <button type="submit" name="report">Enter</button>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
     <div>

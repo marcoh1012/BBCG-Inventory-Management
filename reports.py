@@ -5,6 +5,14 @@ from datetime import datetime, timedelta
 """ methods for reports """
 
 
+def get_report_delta(start, end):
+    """ get jobs for time specified """
+
+    jobs= Job.query.filter(Job.installation_date>=end, Job.installation_date<=start).all()
+    slabjobs = db.session.query(Slab,Job,SlabJob.percent_used).join(Slab).join(Vendor).join(Color).order_by(Vendor.name, Color.name).filter(Job.installation_date>=end, Job.installation_date<=start)
+
+    return [jobs,slabjobs]
+
 
 
 def get_report(jobs):

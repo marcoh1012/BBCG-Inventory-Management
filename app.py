@@ -827,19 +827,43 @@ def print_barcodes():
     flash('Please Sign In First', 'danger')
     return redirect('/')
 
-@app.route('/Reports')
+@app.route('/Reports', methods=['GET', 'POST'])
 def reports():
     """ reports page """
 
     if current_user.is_authenticated:
-        week = datetime.today() - timedelta(days = 8)
+        report_title = "Report Week To Date"
+        start = datetime.today()
+        end = datetime.today() - timedelta(days=7)
+        results = []
 
-        jobs= Job.query.filter(Job.installation_date>=week, Job.installation_date<=datetime.today()).all()
-        slabjobs = db.session.query(Slab,Job,SlabJob.percent_used).join(Slab).join(Vendor).join(Color).order_by(Vendor.name, Color.name).filter(Job.installation_date>=week, Job.installation_date<=datetime.today())
-        print(jobs)
-        edge_totals=total_lf_job(jobs)
-        data=get_report(jobs)
-        return render_template('/users/reports.html', jobs=jobs, user=current_user, data=data, edgeslf=edge_totals, slabjobs = slabjobs) 
+
+        if request.method == 'POST':
+            """ Get report delta time """
+            if request.values.get('report') == 'Last_week':
+                report_title = "Report Last Week"
+                end = datetime.today() - timedelta(days = (start.weekday() + 7))
+                start = datetime.today() - timedelta(days = (datetime.today().weekday()))
+            elif request.values.get('report') == 'month_to_date':
+                end = datetime.today() - timedelta(days=31)
+                report_title = "Report Month To Date"
+            elif request.values.get('report') == 'year_to_date':
+                end= datetime.today() - timedelta(days=365)
+                report_title = "Report Year To Date"
+                
+            elif request.values.get('report_start'):
+                end = request.values.get('report_start')
+                start = request.values.get('report_end')
+                report_title = f'Report {end} to {start}'
+                
+            results = get_report_delta(start, end)
+
+        else:
+            results = get_report_delta(start,end)
+
+        edge_totals=total_lf_job(results[0])
+        data=get_report(results[0])
+        return render_template('/users/reports.html', jobs=results[0], user=current_user, data=data, edgeslf=edge_totals, slabjobs = results[1], report_title=report_title ) 
 
 
     flash('Please Sign In First', 'danger')

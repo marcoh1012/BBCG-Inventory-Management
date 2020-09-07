@@ -346,6 +346,38 @@ tr {
 }
 
 
+/* Report page styles */
+
+#report-dropdown {
+    background-color: #0097a7 !important;
+}
+
+#report-dropdown button {
+    background-image: none;
+    border-radius: 0 !important;
+    margin-top: 0rem;
+    font-size: 1.5rem;
+    background-color: #0097a7;
+}
+
+#report-dropdown button:hover {
+    background-color: #006064;
+}
+
+.custom_form_report {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.customreport {
+    margin-top: 3px;
+    text-align: center;
+    border: 2px black solid;
+    border-radius: 1rem;
+    align-content: center;
+}
+
+
 /* cellphone */
 
 @media only screen and (max-width:1200px) {
