@@ -25,7 +25,11 @@ class CutSlabForm(FlaskForm):
     """ Form for cutting a slab """
     picture = FileField('Picture')
     job = SelectField('Job Name')
-    cut_amount = FloatField('Amount used in %', validators=[DataRequired(), NumberRange(min=0,max=100,message=" Amount must be between 0 and 1")])
+    cut_amount = FloatField('Amount used in %', validators=[DataRequired(), NumberRange(min=0,max=100,message=" Amount must be between 0 and 100")])
+    length = FloatField('New Length',validators=[DataRequired("Please Enter New Length")])
+    width = FloatField('New Width', validators=[DataRequired("Please Enter New Width")])
+    location = StringField("Slab Location", validators=[Optional()])
+    rem = BooleanField("Rem?")
     notes = TextAreaField('Notes')
 
 
@@ -38,6 +42,7 @@ class SlabForm(FlaskForm):
     slab_num = IntegerField("Slab Number", validators=[DataRequired()])
     length = FloatField('Length',validators=[Optional()])
     width = FloatField('Width', validators=[Optional()])
+    location = StringField("Slab Location", validators=[Optional()])
     type_id = SelectField('Slab Type', validators=[DataRequired()])
 
 class JobForm(FlaskForm):

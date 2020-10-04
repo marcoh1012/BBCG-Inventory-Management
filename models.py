@@ -116,14 +116,19 @@ class Slab(db.Model):
     batch_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
     slab_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
 
+    
+    starting_length = db.Column(db.Integer, nullable=True, default=0)
+    starting_width = db.Column(db.Integer, nullable=True, default=0)
     length = db.Column(db.Integer, nullable=True, default=0)
     width = db.Column(db.Integer, nullable=True, default=0)
     picture = db.Column(db.Text, nullable=True, default = '/static/pics/no_image.jpg')
     type_id = db.Column(db.Integer, db.ForeignKey('slab_types.id'), nullable=False)
-    label = db.Column(db.Text, unique=True, nullable=True)
+    label = db.Column(db.BigInteger, unique=True, nullable=True)
     label_picture = db.Column(db.Text,nullable=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     amount_left = db.Column(db.Integer, default = 100)
+    location = db.Column(db.Text, nullable=True, default= 'Warehouse')
+    rem = db.Column(db.Boolean, default=False)
     completed = db.Column(db.Boolean, default=False)
 
     vendor = db.relationship('Vendor')
@@ -147,7 +152,7 @@ class Slab(db.Model):
 
     def calculate_area(self):
         """ Calculate square footage of a slab  input is in  inches"""
-        sf = round((int(self.length) * int(self.width)) / 144,2)
+        sf = round((int(self.starting_length) * int(self.starting_width)) / 144,2)
         return sf
     def cut_slab(self,percent):
         """ calculate the amount of slab left """

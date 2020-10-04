@@ -108,8 +108,21 @@ def slabs(page_num):
             return redirect('/recieve')
         if user_type == 'fabricator':
             return redirect('/scan')
-        slabs=Slab.query.paginate(per_page=20, page=page_num)
+        slabs=Slab.query.filter(Slab.rem==False).paginate(per_page=20, page=page_num)
         return render_template(f'slabs/slabs.html', slabs=slabs, user=current_user, sort_by=None)
+    return redirect('/')
+
+    ##### REMS ROUTE
+@app.route('/rems/<int:page_num>')
+def rems(page_num):
+    if current_user.is_authenticated: 
+        user_type=current_user.user_type.type.lower()
+        if user_type == 'reciever':
+            return redirect('/recieve')
+        if user_type == 'fabricator':
+            return redirect('/scan')
+        slabs=Slab.query.filter(Slab.rem==True).paginate(per_page=20, page=page_num)
+        return render_template(f'slabs/rems.html', slabs=slabs, user=current_user, sort_by=None)
     return redirect('/')
     
 ##### Slab Routes #####
@@ -157,8 +170,13 @@ def cut_slab(id):
                 slab.picture = f'/static/pics/{filename}'
             slab.cut_slab(form.cut_amount.data)
             slab.jobs.append(job)
+            slab.length = form.length.data
+            slab.width = form.width.data
+            slab.location = form.location.data
+            slab.rem = form.rem.data
             slab_job = SlabJob.query.get((slab.label,job.id))
             slab_job.percent_used=form.cut_amount.data
+
             db.session.commit()
             flash('Success', 'success')
             return redirect(f'/scan')
@@ -247,8 +265,10 @@ def recieve():
                     color_id=form.color.data,
                     batch_num=form.batch_num.data,
                     slab_num=form.slab_num.data,
-                    length=form.length.data,
-                    width=form.width.data,
+                    starting_length=form.length.data,
+                    starting_width=form.width.data,
+                    length = form.length.data,
+                    width = form.width.data,
                     type_id=form.type_id.data
                 )
                 if form.picture.data:
@@ -524,9 +544,9 @@ def search_slabs_term(term,page_num):
 
     if current_user.is_authenticated:  
         if term.isnumeric():
-             full_results=Slab.query.filter(Slab.label==term).paginate(per_page=20,page=page_num, error_out=False)
+             full_results=Slab.query.filter(Slab.label==term, Slab.rem==False).paginate(per_page=20,page=page_num, error_out=False)
         else:
-            full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
+            full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(Slab.rem==False, or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
         
         return render_template('/slabs/slabs.html', slabs=full_results, user=current_user, sort_by='search', search_term=term)
 
@@ -539,15 +559,15 @@ def sort_slabs(sort_type,page_num):
     
     if current_user.is_authenticated:
         if sort_type == 'name-asc':
-            slabs=Slab.query.join(Vendor).order_by(Vendor.name).paginate(per_page=20, page=page_num)
+            slabs=Slab.query.filer(Slab.rem==False).join(Vendor).order_by(Vendor.name).paginate(per_page=20, page=page_num)
         elif sort_type == 'name-desc':
-            slabs=Slab.query.join(Vendor).order_by(Vendor.name.desc()).paginate(per_page=20, page=page_num)
+            slabs=Slab.query.filer(Slab.rem==False).join(Vendor).order_by(Vendor.name.desc()).paginate(per_page=20, page=page_num)
         elif sort_type == 'date-asc':
-            slabs=Slab.query.order_by(Slab.created).paginate(per_page=20, page=page_num)
+            slabs=Slab.query.filer(Slab.rem==False).order_by(Slab.created).paginate(per_page=20, page=page_num)
         elif sort_type == 'date-desc':
-            slabs=Slab.query.order_by(Slab.created.desc()).paginate(per_page=20, page=page_num)
+            slabs=Slab.query.filer(Slab.rem==False).order_by(Slab.created.desc()).paginate(per_page=20, page=page_num)
         elif sort_type == 'completed':
-            slabs=Slab.query.filter(Slab.completed==True).paginate(per_page=20, page=page_num)
+            slabs=Slab.query.filer(Slab.rem==False).filter(Slab.completed==True).paginate(per_page=20, page=page_num)
         else:
             flash("Not a Valid Sort Type", 'danger')
             return redirect('/')
@@ -556,6 +576,67 @@ def sort_slabs(sort_type,page_num):
 
     flash('Please Sign In First', 'danger')
     return redirect('/')
+
+
+
+#### Rems Sorting/ Searching Routes
+
+
+@app.route('/rems/search/<int:page_num>', methods=['GET','POST'])
+def search_rems(page_num):
+    """ search for slabs with keywords """
+
+    if current_user.is_authenticated:
+        term=request.form.get('search-term')
+        return redirect(f'/rems/search/{term}/{page_num}')
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
+        
+
+@app.route('/rems/search/<term>/<int:page_num>')
+def search_rems_term(term,page_num):
+    """ search for slabs with keywords and pagination """
+
+    if current_user.is_authenticated:  
+        if term.isnumeric():
+             full_results=Slab.query.filter(Slab.label==term, Slab.rem==True).paginate(per_page=20,page=page_num, error_out=False)
+        else:
+            full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(Slab.rem==True, or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
+        
+        return render_template('/slabs/rems.html', slabs=full_results, user=current_user, sort_by='search', search_term=term)
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+       
+@app.route('/rems/sort/<sort_type>/<int:page_num>')
+def sort_rems(sort_type,page_num):
+    """ Slabs Sort By """
+    
+    if current_user.is_authenticated:
+        if sort_type == 'name-asc':
+            slabs=Slab.query.filer(Slab.rem==True).join(Vendor).order_by(Vendor.name).paginate(per_page=20, page=page_num)
+        elif sort_type == 'name-desc':
+            slabs=Slab.query.filer(Slab.rem==True).join(Vendor).order_by(Vendor.name.desc()).paginate(per_page=20, page=page_num)
+        elif sort_type == 'date-asc':
+            slabs=Slab.query.filer(Slab.rem==True).order_by(Slab.created).paginate(per_page=20, page=page_num)
+        elif sort_type == 'date-desc':
+            slabs=Slab.query.filer(Slab.rem==True).order_by(Slab.created.desc()).paginate(per_page=20, page=page_num)
+        elif sort_type == 'completed':
+            slabs=Slab.query.filer(Slab.rem==True).filter(Slab.completed==True).paginate(per_page=20, page=page_num)
+        else:
+            flash("Not a Valid Sort Type", 'danger')
+            return redirect('/')
+
+        return render_template('/slabs/rems.html',slabs=slabs, user=current_user, sort_by= sort_type)
+
+    flash('Please Sign In First', 'danger')
+    return redirect('/')
+
+
+
+ ###Jobs Sorting/Searching Routes   
 
 @app.route('/jobs/search/<int:page_num>', methods=['POST'])
 def search_jobs(page_num):
@@ -573,7 +654,7 @@ def search_jobs_term(term,page_num):
     """ search jobs useing term """
         
     if current_user.is_authenticated:
-        full_results=Job.query.join(Contractor).join(JobEdge).join(Edge).filter(or_(Job.name.ilike(term),Contractor.name.ilike(term),(Edge.name.ilike(term)))).paginate(per_page=16,page=page_num, error_out=False)
+        full_results=Job.query.join(Contractor).join(JobEdge).join(Edge).filter(or_(Job.name.ilike(term),Contractor.name.ilike(term),(Edge.name.ilike(term)),(Job.po_number==term))).paginate(per_page=16,page=page_num, error_out=False)
     
         return render_template('/jobs/jobs.html', jobs=full_results, user=current_user, sort_by='search', search_term=term)
 
