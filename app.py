@@ -544,7 +544,7 @@ def search_slabs_term(term,page_num):
 
     if current_user.is_authenticated:  
         if term.isnumeric():
-             full_results=Slab.query.filter(Slab.label==term, Slab.rem==False).paginate(per_page=20,page=page_num, error_out=False)
+             full_results=Slab.query.filter(Slab.rem==False, or_(Slab.label==term, Slab.length >= term, Slab.width>= term)).paginate(per_page=20,page=page_num, error_out=False)
         else:
             full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(Slab.rem==False, or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
         
@@ -601,7 +601,7 @@ def search_rems_term(term,page_num):
 
     if current_user.is_authenticated:  
         if term.isnumeric():
-             full_results=Slab.query.filter(Slab.label==term, Slab.rem==True).paginate(per_page=20,page=page_num, error_out=False)
+             full_results=Slab.query.filter(Slab.rem==True, or_(Slab.label==term, Slab.length >= term, Slab.width>= term)).paginate(per_page=20,page=page_num, error_out=False)
         else:
             full_results=Slab.query.join(Vendor).join(Color).join(Slab_Type).filter(Slab.rem==True, or_(Vendor.name.ilike(term), Color.name.ilike(term),Slab_Type.name.ilike(term))).paginate(per_page=16,page=page_num, error_out=False)
         
