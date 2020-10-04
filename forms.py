@@ -29,7 +29,7 @@ class CutSlabForm(FlaskForm):
     length = FloatField('New Length',validators=[DataRequired("Please Enter New Length")])
     width = FloatField('New Width', validators=[DataRequired("Please Enter New Width")])
     location = StringField("Slab Location", validators=[Optional()])
-    rem = BooleanField("Rem?")
+    rem = BooleanField("Rem")
     notes = TextAreaField('Notes')
 
 

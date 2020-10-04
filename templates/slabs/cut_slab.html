@@ -16,7 +16,8 @@
 
     <form method="POST" id="cut_slab_form" enctype="multipart/form-data">
         {{ form.hidden_tag() }} {% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors %}
-        <span class="text-danger">{{ error }}</span> {% endfor %} {{ field(placeholder=field.label.text, class="form-control") }} {% endfor %}
+        <span class="text-danger">{{ error }}</span> {% endfor %} {% if field.label.text == 'Rem' %} Check If this is a rem {{ field(style="display:inline-flex !important;") }} {% else %}{{ field(placeholder=field.label.text, class="form-control") }}
+        {% endif %} {% endfor %}
 
         <div class="buttons">
             <button class="btn">Enter</button>
