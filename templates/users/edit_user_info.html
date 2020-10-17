@@ -1,0 +1,17 @@
+<!-- admin user type -->
+{% if user.user_type.type == 'Admin' %} {% extends '/users/admin.html' %} {% endif %}
+<!-- office user type -->
+{% if user.user_type.type == 'Office' %} {% extends '/users/office.html' %} {% endif %} {% block content%}
+<div class="container mt-5">
+    <h2>{{user.username}}</h2>
+    <form method="POST" id="edit_user_form" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}{% for field in form if field.widget.input_type != 'hidden' %} {% for error in field.errors
+            %}
+            <span class="text-danger">{{ error }}</span> {% endfor %} {{field.label.text}}: {{ field(class="form-control") }} {% endfor %}
+
+            <div class="buttons">
+                <button class="btn">Edit</button>
+            </div>
+    </form>
+</div>
+{% endblock %}

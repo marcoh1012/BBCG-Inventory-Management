@@ -100,6 +100,28 @@ def logout():
     flash('logged out', 'success')
     return redirect('/')
 
+
+@app.route('/edituserinfo', methods=['GET', 'POST'])
+def edituserinfo():
+        """edit user info"""
+        if current_user.is_authenticated:
+            form = EditUserInfoForm(obj=current_user)
+            if form.validate_on_submit():
+                user = User.authenticate(current_user.username, form.password.data)
+
+                if not user:
+                    flash("Wrong Password", 'danger')
+                    return redirect('/edituserinfo')
+                    
+                User.edituser(current_user.username, form.username.data, form.new_password.data)
+                db.session.commit()
+                flash('Username/Password Change','success')
+                return redirect('/slabs/1')
+
+            return render_template('users/edit_user_info.html', form=form, user=current_user)
+
+        return redirect('/')
+
 @app.route('/slabs/<int:page_num>')
 def slabs(page_num):
     if current_user.is_authenticated: 

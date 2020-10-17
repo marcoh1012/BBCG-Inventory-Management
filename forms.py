@@ -15,6 +15,13 @@ class CreateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
     type = SelectField('Account Type')
+
+class EditUserInfoForm(FlaskForm):
+    """ Edit User info Form  like username and password"""
+
+    username = StringField('New Username', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[Length(min=6)])
+    password = PasswordField('Current Password', validators=[Length(min=6)])
     
 class ScanBarcodeForm(FlaskForm):
     """ Form to scan in barcode """

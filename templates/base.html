@@ -23,14 +23,14 @@
                 </a>
                 {% if user.user_type.type == 'Office' or user.user_type.type == 'Admin' %}
                 <div class="nav-right">
-                    <p class="float-right">{{user.username}}(<a class="signout" href="/logout">Sign Out</a>)</p>
+                    <p class="float-right"><a class="edit-user" style="color:white" href="/edituserinfo">{{user.username}}</a>(<a class="signout" href="/logout">Sign Out</a>)</p>
 
                     <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbar-items">
             <span class="navbar-toggler-icon"><i class="fas fa-bars" style="font-size: 2rem;"></i></span>
                     
         </div>    
         </button> {% block burgernavs %} {% endblock %} {% else %}
-                    <p class="float-right">{{user.username}}(<a class="signout" href="/logout">Sign Out</a>)</p>
+                    <p class="float-right"><a class="edit-user" style="color:white" href="/edituserinfo">{{user.username}}</a>(<a class="signout" href="/logout">Sign Out</a>)</p>
                     {% endif %}
             </nav>
         </header>

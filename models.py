@@ -61,6 +61,20 @@ class User(UserMixin, db.Model):
 
         return False
 
+    @classmethod
+    def edituser(cls,username, newusername, newpassword):
+        """ edit username/password """
+
+        user = cls.query.filter_by(username=username).first()
+
+        hashed_pwd = bcrypt.generate_password_hash(newpassword).decode('UTF-8')
+
+        user.username = newusername
+        user.password = hashed_pwd
+
+        db.session.add(user)
+        return user
+        
 
 
 
