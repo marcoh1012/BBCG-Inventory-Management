@@ -13,18 +13,18 @@ from reports import *
 from sqlalchemy import exc
 import pytz
 from tzlocal import get_localzone
-
+from config import DB_URL, DB_SECRET_KEY
 # CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1:5432/BBCG'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql:///BBCG')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(db_url,'postgresql:///BBCG')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd() + '/pictures/slabs/'
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY','secret')
+app.config['SECRET_KEY'] = os.environ.get(DB_SECRET_KEY,'secret')
 debug = DebugToolbarExtension(app)
 
 
